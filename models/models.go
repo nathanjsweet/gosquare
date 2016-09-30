@@ -373,7 +373,7 @@ type ItemVariation struct {
 	TrackInventory bool `json:"track_inventory"`
 	// Indicates whether the item variation displays an alert when its inventory quantity is
 	// less than or equal to its inventory_alert_threshold.
-	InventoryAlertType InventoryAlertType `json:"inventory_alert_type"`
+	InventoryAlertType string `json:"inventory_alert_type"`
 	// If the inventory quantity for the variation is less than or equal to this value and
 	// inventory_alert_type is LOW_QUANTITY, the variation displays an alert in
 	// the merchant dashboard.This value is always an integer.
