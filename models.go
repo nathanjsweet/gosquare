@@ -1,4 +1,4 @@
-package models
+package gosquare
 
 // Represents a merchant's bank account.
 type BankAccount struct {
