@@ -30,7 +30,7 @@ func ListLocations(token string) ([]*Merchant, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateEmployeeReqObjectect struct {
+type CreateEmployeeReqObject struct {
 	// The employee's first name.
 	FirstName []string `json:"first_name"`
 	// The employee's last name.
@@ -48,7 +48,7 @@ type CreateEmployeeReqObjectect struct {
 // Creates an employee for a business.
 //
 // Required permissions:  EMPLOYEES_WRITE
-func CreateEmployee(token string, reqObj CreateEmployeeReqObjectect) (*Employee, error) {
+func CreateEmployee(token string, reqObj CreateEmployeeReqObject) (*Employee, error) {
 	v := new(Employee)
 	err := v1Request("POST", "/v1/me/employees", token, reqObj, v)
 	if err != nil {
@@ -61,8 +61,8 @@ func CreateEmployee(token string, reqObj CreateEmployeeReqObjectect) (*Employee,
 //
 // You can filter the results returned by this endpoint by exactly one of the following
 //       fields:
-func ListEmployees(token string) (*paginate, error) {
-	v := new(paginate)
+func ListEmployees(token string) ([]*Employee, error) {
+	v := new([]*Employee)
 	err := v1Request("GET", "/v1/me/employees", token, nil, v)
 	if err != nil {
 		return nil, err
@@ -110,11 +110,11 @@ func UpdateEmployee(token, EmployeeId string, reqObj UpdateEmployeeReqObject) (*
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateRoleReqObjectect struct {
+type CreateRoleReqObject struct {
 	// The role's name.
 	Name []string `json:"name"`
 	// The role's permissions.
-	Permissions []EmployeeRole.Permission `json:"permissions"`
+	Permissions []string `json:"permissions"`
 	// If true, employees with this role have all permissions, regardless of the
 	//             values indicated in permissions.Default value: false
 	IsOwner []bool `json:"is_owner"`
@@ -157,7 +157,7 @@ func RetrieveRole(token, RoleId string) (*EmployeeRole, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateRoleReqObjectect struct {
+type UpdateRoleReqObject struct {
 	// The ID of the role to modify.
 	RoleId []string `json:"role_id"`
 	// The role's name.
@@ -182,7 +182,7 @@ func UpdateRole(token, RoleId string, reqObj UpdateRoleReqObject) (*EmployeeRole
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateTimecardReqObjectect struct {
+type CreateTimecardReqObject struct {
 	// The employee to create a timecard for.
 	EmployeeId []string `json:"employee_id"`
 	// The clock-in time for the timecard, in ISO 8601 format.Default value: The current time.
@@ -234,7 +234,7 @@ func RetrieveTimecard(token, TimecardId string) (*Timecard, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateTimecardReqObjectect struct {
+type UpdateTimecardReqObject struct {
 	// The ID of the timecard to modify.
 	TimecardId []string `json:"timecard_id"`
 	// The clock-in time for the timecard, in ISO 8601 format.
@@ -386,7 +386,7 @@ func RetrieveSettlement(token, LocationId, SettlementId string) (*Settlement, er
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateRefundReqObjectect struct {
+type CreateRefundReqObject struct {
 	// The ID of the original payment's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -461,7 +461,7 @@ func RetrieveOrder(token, LocationId, OrderId string) (*Order, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateOrderReqObjectect struct {
+type UpdateOrderReqObject struct {
 	// The ID of the order's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -522,7 +522,7 @@ func RetrieveBankAccount(token, LocationId, BankAccountId string) (*BankAccount,
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateItemReqObjectect struct {
+type CreateItemReqObject struct {
 	// The ID of the location to create an item for.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -591,7 +591,7 @@ func RetrieveItem(token, LocationId, ItemId string) (*Item, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateItemReqObjectect struct {
+type UpdateItemReqObject struct {
 	// The ID of the item's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -651,7 +651,7 @@ func DeleteItem(token, LocationId, ItemId string) error {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UploadItemImageReqObjectect struct {
+type UploadItemImageReqObject struct {
 	// The ID of the item's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -690,7 +690,7 @@ func UploadItemImage(token, LocationId, ItemId string, reqObj UploadItemImageReq
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateVariationReqObjectect struct {
+type CreateVariationReqObject struct {
 	// The ID of the item's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	MerchantId []string `json:"merchant_id"`
@@ -735,7 +735,7 @@ func CreateVariation(token, LocationId, ItemId string, reqObj CreateVariationReq
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateVariationReqObjectect struct {
+type UpdateVariationReqObject struct {
 	// The ID of the variation's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -808,7 +808,7 @@ func ListInventory(token, LocationId string) (*paginate, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type AdjustInventoryReqObjectect struct {
+type AdjustInventoryReqObject struct {
 	// The ID of the variation's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -839,7 +839,7 @@ func AdjustInventory(token, LocationId, VariationId string, reqObj AdjustInvento
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateModifierListReqObjectect struct {
+type CreateModifierListReqObject struct {
 	// The ID of the location to create a modifier list for.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -894,7 +894,7 @@ func RetrieveModifierList(token, LocationId, ModifierListId string) (*ModifierLi
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateModifierListReqObjectect struct {
+type UpdateModifierListReqObject struct {
 	// The ID of the modifier list's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -933,7 +933,7 @@ func DeleteModifierList(token, LocationId, ModifierListId string) error {
 	return v, nil
 }
 
-type ApplyModifierListReqObjectect struct {
+type ApplyModifierListReqObject struct {
 	// The ID of the modifier list's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -970,7 +970,7 @@ func RemoveModifierList(token, LocationId, ItemId, ModifierListId string) (*Item
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateModifierOptionReqObjectect struct {
+type CreateModifierOptionReqObject struct {
 	// The ID of the modifier list's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1002,7 +1002,7 @@ func CreateModifierOption(token, LocationId, ModifierListId string, reqObj Creat
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateModifierOptionReqObjectect struct {
+type UpdateModifierOptionReqObject struct {
 	// The ID of the modifier option's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1047,7 +1047,7 @@ func DeleteModifierOption(token, LocationId, ModifierListId, ModifierOptionId st
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateCategoryReqObjectect struct {
+type CreateCategoryReqObject struct {
 	// The ID of the location to create a category for.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1087,7 +1087,7 @@ func ListCategories(token, LocationId string) (*paginate, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateCategoryReqObjectect struct {
+type UpdateCategoryReqObject struct {
 	// The ID of the category's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1125,7 +1125,7 @@ func DeleteCategory(token, LocationId, CategoryId string) error {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateDiscountReqObjectect struct {
+type CreateDiscountReqObject struct {
 	// The ID of the location to create a discount for.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1177,7 +1177,7 @@ func ListDiscounts(token, LocationId string) (*paginate, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateDiscountReqObjectect struct {
+type UpdateDiscountReqObject struct {
 	// The ID of the discount's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1227,7 +1227,7 @@ func DeleteDiscount(token, LocationId, DiscountId string) error {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreateFeeReqObjectect struct {
+type CreateFeeReqObject struct {
 	// The ID of the location to create a fee for.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1279,7 +1279,7 @@ func ListFees(token, LocationId string) (*paginate, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateFeeReqObjectect struct {
+type UpdateFeeReqObject struct {
 	// The ID of the fee's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1329,7 +1329,7 @@ func DeleteFee(token, LocationId, FeeId string) error {
 	return v, nil
 }
 
-type ApplyFeeReqObjectect struct {
+type ApplyFeeReqObject struct {
 	// The ID of the fee's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1366,7 +1366,7 @@ func RemoveFee(token, LocationId, ItemId, FeeId string) (*Item, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type CreatePageReqObjectect struct {
+type CreatePageReqObject struct {
 	// The ID of the location to create a Favorites page for.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1413,7 +1413,7 @@ func ListPages(token, LocationId string) ([]*Page, error) {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdatePageReqObjectect struct {
+type UpdatePageReqObject struct {
 	// The ID of the Favorites page's associated location.Get a business's locations with the List Locations
 	//             endpoint..
 	LocationId []string `json:"location_id"`
@@ -1452,7 +1452,7 @@ func DeletePage(token, LocationId, PageId string) error {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UpdateCellReqObjectect struct {
+type UpdateCellReqObject struct {
 	// The ID of the Favorites page's associated location.Get a business's locations with the List Locations
 	//             endpoint.
 	LocationId []string `json:"location_id"`
@@ -1500,7 +1500,7 @@ func DeleteCell(token, LocationId, PageId string) error {
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type SubmitBatchReqObjectect struct {
+type SubmitBatchReqObject struct {
 	// The requests to perform.
 	Requests []BatchRequest `json:"requests"`
 }
@@ -1532,7 +1532,7 @@ func ListWebhooks(token, LocationId string) ([]*WebhookEventType, error) {
 	return v, nil
 }
 
-type UpdateWebhooksReqObjectect struct {
+type UpdateWebhooksReqObject struct {
 	// The ID of the location to update webhook preferences for.
 	LocationId []string `json:"location_id"`
 }
