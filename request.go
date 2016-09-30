@@ -19,7 +19,15 @@ const (
 	_OAUTH_RENEW_TOKEN = _OAUTH_URL + "clients/%s/access-token/renew"
 )
 
-func v1Request(method, action, token string, body io.Reader, result interface{}) error {
+func v1Request(method, action, token string, reqObj interface{}, result interface{}) error {
+	var body io.Reader = nil
+	if reqObj != nil {
+		bts, err := json.Marshal(reqObj)
+		if err != nil {
+			return err
+		}
+		body = bytes.NewReader(bts)
+	}
 	req, err := http.NewRequest(method, fmt.Sprintf(_V1_ENDPOINT, action), body)
 	if err != nil {
 		return err
