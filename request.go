@@ -9,44 +9,66 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const (
-	_V1_ENDPOINT       = "https://connect.squareup.com/v1/%s"
-	_OAUTH_URL         = "https://connect.squareup.com/oauth2/"
-	_OAUTH_PERM        = _OAUTH_URL + "authorize?client_id=%s&scope=%s&session=%t"
-	_OAUTH_TOKEN       = _OAUTH_URL + "token"
-	_OAUTH_RENEW_TOKEN = _OAUTH_URL + "clients/%s/access-token/renew"
+	_SQUARE_ENDPOINT = "https://connect.squareup.com"
+	_OAUTH_PERM      = _SQUARE_ENDPOINT + "/oauth2/authorize?client_id=%s&scope=%s&session=%t"
 )
 
-func v1Request(method, action, token string, reqObj interface{}, result interface{}) error {
+type NextRequest struct {
+	uri   string
+	token string
+}
+
+func (nr *NextRequest) GetNextRequest(result interface{}) (*NextRequest, error) {
+	return squareRequest("GET", nr.uri, token, nil, result)
+}
+
+func squareRequest(method, action, token string, reqObj interface{}, result interface{}) (*NextRequest, error) {
 	var body io.Reader = nil
 	if reqObj != nil {
 		bts, err := json.Marshal(reqObj)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		body = bytes.NewReader(bts)
 	}
-	req, err := http.NewRequest(method, fmt.Sprintf(_V1_ENDPOINT, action), body)
+	req, err := http.NewRequest(method, fmt.Sprintf("%s%s", _SQUARE_ENDPOINT, action), body)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	req.Header["Authorization"] = []string{fmt.Sprintf("Bearer %s", token)}
+	var p1Auth string
+	if strings.Index(action, "oauth2") > -1 {
+		p1Auth = "Client"
+	} else {
+		p1Auth = "Bearer"
+	}
+	req.Header["Authorization"] = []string{fmt.Sprintf("%s %s", p1Auth, token)}
 	req.Header["Accept"] = []string{"application/json"}
 	if method == "POST" || method == "PUT" {
 		req.Header["Content-Type"] = []string{"application/json"}
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer resp.Body.Close()
-	dec := json.NewDecoder(resp.Body)
-	if err = dec.Decode(result); err != nil {
-		return err
+	var nr *NextRequest = nil
+	if method != "DELETE" {
+		if v, ok := resp.Header["Link"]; ok && len(v) > 0 {
+			s := strings.Split(v[0], ";")[0]
+			// 29 is the length of "<https://connect.squareup.com"
+			n := s[29 : len(s)-1]
+			nr = &NextRequest{n, token}
+		}
+		dec := json.NewDecoder(resp.Body)
+		if err = dec.Decode(result); err != nil {
+			return nil, err
+		}
 	}
-	return nil
+	return nr, nil
 }
 
 // Generate a url to pass to a user to gain permisson to their account.
@@ -79,47 +101,30 @@ type Token struct {
 
 // Get first token from new merchant's authorization code.
 func GetToken(authorizationCode, applicationId, applicationSecret string) (*Token, error) {
-	bts, err := json.Marshal(&map[string]string{
+	reqObj := map[string]string{
 		"code":          authorizationCode,
 		"client_id":     applicationId,
 		"client_secret": applicationSecret,
-	})
-	if err != nil {
+	}
+	t := new(Token)
+	if err := squareRequest("POST", "/oauth2/token", applicationSecret, &reqObj, t); err != nil {
 		return nil, err
 	}
-	return tokenRequest(_OAUTH_TOKEN, bts, applicationSecret)
+	return t, nil
 }
 
 // Renew token from expired token. If the token is older than 30 days this won't work.
 func RenewToken(expiredToken, applicationId, applicationSecret string) (*Token, error) {
-	bts, err := json.Marshal(&map[string]string{
+	reqObj := map[string]string{
 		"access_token": expiredToken,
-	})
-	if err != nil {
+	}
+	t := new(Token)
+	if err := squareRequest("POST",
+		fmt.Sprintf("/oauth2/clients/%s/access-token/renew", applicationId),
+		applicationSecret, &reqObj, t); err != nil {
 		return nil, err
 	}
-	return tokenRequest(fmt.Sprintf(_OAUTH_RENEW_TOKEN, applicationId), bts, applicationSecret)
-}
-
-func tokenRequest(url string, body []byte, applicationSecret string) (*Token, error) {
-	req, err := http.NewRequest("POST", url, bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header["Authorization"] = []string{fmt.Sprintf("Client %s", applicationSecret)}
-	req.Header["Accept"] = []string{"application/json"}
-	req.Header["Content-Type"] = []string{"application/json"}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	dec := json.NewDecoder(resp.Body)
-	token := new(Token)
-	if err = dec.Decode(token); err != nil {
-		return nil, err
-	}
-	return token, nil
+	return t, nil
 }
 
 // This method validates that the "X-Square-Signature" header is valid
