@@ -35,6 +35,10 @@ func squareRequest(method, action, token string, reqObj interface{}, result inte
 		}
 		body = bytes.NewReader(bts)
 	}
+	return baseSquareRequest(method, action, token, "application/json", body, result)
+}
+
+func baseSquareRequest(method, action, token, contentType string, body io.Reader, result interface{}) (*NextRequest, error) {
 	req, err := http.NewRequest(method, fmt.Sprintf("%s%s", _SQUARE_ENDPOINT, action), body)
 	if err != nil {
 		return nil, err
@@ -48,7 +52,7 @@ func squareRequest(method, action, token string, reqObj interface{}, result inte
 	req.Header["Authorization"] = []string{fmt.Sprintf("%s %s", p1Auth, token)}
 	req.Header["Accept"] = []string{"application/json"}
 	if method == "POST" || method == "PUT" {
-		req.Header["Content-Type"] = []string{"application/json"}
+		req.Header.Set("Content-Type", contentType)
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

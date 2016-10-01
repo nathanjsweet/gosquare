@@ -1,5 +1,13 @@
 package gosquare
 
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"mime/multipart"
+	"net/textproto"
+)
+
 // Provides a business's account information, such as its name and associated email address.
 //
 // Required permissions:  MERCHANT_PROFILE_READ
@@ -786,12 +794,6 @@ func DeleteItem(token, locationId, itemId string) error {
 	return v, nil
 }
 
-// For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
-type UploadItemImageReqObject struct {
-	// The image's binary data.
-	ImageData data `json:"image_data"`
-}
-
 // Uploads a JPEG or PNG image and sets it as the master image for an item. See this article for recommended
 // specifications for item images.
 //
@@ -811,9 +813,24 @@ type UploadItemImageReqObject struct {
 // Note that some HTTP libraries set your request's multipart boundary for you.
 //
 // Required permissions:  ITEMS_WRITE
-func UploadItemImage(token, locationId, itemId string, reqObj *UploadItemImageReqObject) (*ItemImage, error) {
+func UploadItemImage(token, locationId, itemId, imageName, imageMime string, body io.Reader) (*ItemImage, error) {
 	v := new(ItemImage)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/items/%s/image", locationId, itemId), token, reqObj, v)
+	b := bytes.NewBuffer(make([]byte))
+	bw := multipart.NewWriter(b)
+	boundary := bw.Boundary()
+	mh := make(textproto.MIMEHeader)
+	mh.Set("Content-Type", imageMime)
+	mh.Set("Content-Disposition", fmt.Sprtinf(`form-data; name="image_data"; filename="%s"`, imageName))
+	pw, err := bw.CreatePart(mh)
+	if err != nil {
+		return nil, err
+	}
+	_, err = io.Copy(pw, body)
+	err = bw.Close()
+	if err != nil {
+		return nil, err
+	}
+	_, err = baseSquareRequest("POST", fmt.Sprintf("/v1/%s/items/%s/image", locationId, itemId), token, fmt.Sprintf("multipart/form-data; boundary=%s", boundary), b, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1553,6 +1570,9 @@ type SubmitBatchReqObject struct {
 //
 // Note the following when using the Submit Batch endpoint:
 func SubmitBatch(token string, reqObj *SubmitBatchReqObject) ([]*BatchResponse, *NextRequest, error) {
+	if len(reqObj.Requests) > 30 {
+		return nil, nil, fmt.Errorf("You cannot submit more than 30 requests to `/v1/batch`")
+	}
 	v := make([]*BatchResponse)
 	nr, err := squareRequest("POST", "/v1/batch", token, reqObj, &v)
 	if err != nil {

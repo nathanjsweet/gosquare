@@ -46,7 +46,7 @@ type BatchRequest struct {
 // Represents the response for a request included in a call to the Submit Batch endpoint.
 type BatchResponse struct {
 	// The response's HTTP status code.
-	StatusCode float64 `json:"status_code"`
+	StatusCode int `json:"status_code"`
 	// Contains any important headers for the response, indexed by header name. For example,
 	// if the response includes a pagination header, the
 	// header's value is available from headers["Link"].
@@ -301,7 +301,7 @@ type InventoryEntry struct {
 	// The variation that the entry corresponds to.
 	VariationId string `json:"variation_id"`
 	// The current available quantity of the item variation.
-	QuantityOnHand float64 `json:"quantity_on_hand"`
+	QuantityOnHand int `json:"quantity_on_hand"`
 }
 
 // Represents a merchant's item.
@@ -361,7 +361,7 @@ type ItemVariation struct {
 	// merchant dashboard. If more than one variation for the same item has the same
 	// ordinal value, those variations are displayed in alphabetical order.
 	// An item's variation with the lowest ordinal value is displayed first.
-	Ordinal float64 `json:"ordinal"`
+	Ordinal int `json:"ordinal"`
 	// Indicates whether the item variation's price is fixed or determined at the time of
 	// sale.
 	PricingType string `json:"pricing_type"`
@@ -377,7 +377,7 @@ type ItemVariation struct {
 	// If the inventory quantity for the variation is less than or equal to this value and
 	// inventory_alert_type is LOW_QUANTITY, the variation displays an alert in
 	// the merchant dashboard.This value is always an integer.
-	InventoryAlertThreshold float64 `json:"inventory_alert_threshold"`
+	InventoryAlertThreshold int `json:"inventory_alert_threshold"`
 	// Arbitrary metadata associated with the variation. Cannot exceed 255 characters.
 	UserData string `json:"user_data"`
 }
@@ -461,7 +461,7 @@ type ModifierOption struct {
 	// merchant dashboard. If more than one modifier option in the same modifier list has the
 	//same ordinal value, those options are displayed in alphabetical order.
 	// A modifier list's option with the lowest ordinal value is displayed first.
-	Ordinal float64 `json:"ordinal"`
+	Ordinal int `json:"ordinal"`
 	// The ID of the modifier list the option belongs to.
 	ModifierListId string `json:"modifier_list_id"`
 }
@@ -471,7 +471,7 @@ type ModifierOption struct {
 type Money struct {
 	// The amount of money, in the smallest unit of the applicable currency. For US dollars,
 	// this value is in cents.This value is always an integer.
-	Amount float64 `json:"amount"`
+	Amount int `json:"amount"`
 	// The type of currency involved in the current payment, in ISO 4217 format. For example, the
 	// currency code for US dollars is USD.
 	CurrencyCode string `json:"currency_code"`
@@ -527,7 +527,7 @@ type Order struct {
 	BtcReceiveAddress string `json:"btc_receive_address"`
 	// For Bitcoin transactions, the price of the buyer's order in satoshi (100 million
 	// satoshi equals 1 BTC).
-	BtcPriceSatoshi float64 `json:"btc_price_satoshi"`
+	BtcPriceSatoshi int `json:"btc_price_satoshi"`
 }
 
 // Represents a prior action performed on an online store order.
@@ -546,7 +546,7 @@ type Page struct {
 	Name string `json:"name"`
 	// The page's position in the merchant's list of pages. Always an integer between 0 and 4,
 	// inclusive.
-	PageIndex float64 `json:"page_index"`
+	PageIndex int `json:"page_index"`
 	// The cells included on the page.
 	Cells []PageCell `json:"cells"`
 }
@@ -556,9 +556,9 @@ type PageCell struct {
 	// The unique identifier of the page the cell is included on.
 	PageId string `json:"page_id"`
 	// The row of the cell. Always an integer between 0 and 4, inclusive.
-	Row float64 `json:"row"`
+	Row int `json:"row"`
 	// The column of the cell. Always an integer between 0 and 4, inclusive.
-	Column float64 `json:"column"`
+	Column int `json:"column"`
 	// The type of entity represented in the cell (ITEM, DISCOUNT,
 	// CATEGORY, or PLACEHOLDER).
 	ObjectType string `json:"object_type"`
