@@ -29,7 +29,7 @@ func RetrieveBusiness(token string) (*Merchant, error) {
 //
 // Required permissions:  MERCHANT_PROFILE_READ
 func ListLocations(token string) ([]*Merchant, *NextRequest, error) {
-	v := make([]*Merchant)
+	v := make([]*Merchant, 0)
 	nr, err := squareRequest("GET", "/v1/me/locations", token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -106,7 +106,7 @@ func CreateEmployee(token string, reqObj *CreateEmployeeReqObject) (*Employee, e
 // The maximum number of employee entities to return in a single response. This value
 // cannot exceed 200.This value is always an integer.Default value: 100
 func ListEmployees(token string, order, beginUpdatedAt, endUpdatedAt, beginCreatedAt, endCreatedAt, status, externalId string, limit int) ([]*Employee, *NextRequest, error) {
-	v := make([]*Employee)
+	v := make([]*Employee, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/me/employees?order=%s&begin_updated_at=%s&end_updated_at=%s&begin_created_at=%s&end_created_at=%s&status=%s&external_id=%s&limit=%d", order, beginUpdatedAt, endUpdatedAt, beginCreatedAt, endCreatedAt, status, externalId, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -185,7 +185,7 @@ func CreateRole(token string, reqObj *CreateRoleReqObject) (*EmployeeRole, error
 // The maximum number of employee entities to return in a single response. This value
 // cannot exceed 200.This value is always an integer.Default value: 100
 func ListRoles(token, order string, limit int) ([]*EmployeeRole, *NextRequest, error) {
-	v := make([]*EmployeeRole)
+	v := make([]*EmployeeRole, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/me/roles?order=%s&limit=%d", order, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -308,7 +308,7 @@ func CreateTimecard(token string, reqObj *CreateTimecardReqObject) (*Timecard, e
 // The maximum number of timecards to return in a single response. This value cannot
 // exceed 200.This value is always an integer.
 func ListTimecards(token, order, employeeId, beginClockinTime, endClockinTime, beginClockoutTime, endClockoutTime, beginUpdatedAt, endUpdatedAt string, deleted bool, limit int) ([]*Timecard, *NextRequest, error) {
-	v := make([]*Timecard)
+	v := make([]*Timecard, 0)
 	nr, err := squareRequest("GET",
 		fmt.Sprintf("/v1/me/timecards?order=%s&employee_id=%s&begin_clockin_time=%s&end_clockin_time=%s&begin_clockout_time=%s&end_clockout_time=%s&begin_updated_at=%s&end_updated_at=%s&deleted=%t&limit=%d",
 			order, employeeId, beginClockinTime, endClockinTime, beginClockoutTime, endClockoutTime, beginUpdatedAt, endUpdatedAt, deleted, limit), token, nil, &v)
@@ -359,16 +359,16 @@ func UpdateTimecard(token, timecardId string, reqObj *UpdateTimecardReqObject) (
 func DeleteTimecard(token, timecardId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/me/timecards/%s", timecardId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // Provides summary information for all events associated with a particular timecard.
 //
 // Required permissions:  TIMECARDS_READ
 func ListTimecardEvents(token, timecardId string) ([]*TimecardEvent, *NextRequest, error) {
-	v := make([]*TimecardEvent)
+	v := make([]*TimecardEvent, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/me/timecards/%s/events", timecardId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -396,7 +396,7 @@ func ListTimecardEvents(token, timecardId string) ([]*TimecardEvent, *NextReques
 // The order in which cash drawer shifts are listed in the response, based on their
 // created_at field.Default value: ASC
 func ListCashDrawerShifts(token, locationId, beginTime, endTime, order string) ([]*CashDrawerShift, *NextRequest, error) {
-	v := make([]*CashDrawerShift)
+	v := make([]*CashDrawerShift, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/cash-drawer-shifts?begin_time=%s&end_time=%s&order=%s", locationId, beginTime, endTime, order), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -439,7 +439,7 @@ func RetrieveCashDrawerShift(token, locationId, shiftId string) (*CashDrawerShif
 // The maximum number of payments to return in a single response. This value cannot exceed
 // 200.This value is always an integer.Default value: 100
 func ListPayments(token, locationId, beginTime, endTime, order string, limit int) ([]*Payment, *NextRequest, error) {
-	v := make([]*Payment)
+	v := make([]*Payment, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/payments?begin_time=%s&end_time=%s&order=%s&limit=%d", locationId, beginTime, endTime, order, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -499,7 +499,7 @@ func RetrievePayment(token, locationId, paymentId string) (*Payment, error) {
 // Provide this parameter to retrieve only settlements with a particular status
 // (SENT or FAILED).
 func ListSettlements(token, locationId, beginTime, endTime, order string, limit int, status string) ([]*Settlement, *NextRequest, error) {
-	v := make([]*Settlement)
+	v := make([]*Settlement, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/settlements?begin_time=%s&end_time=%s&order=%s&limit=%d&status=%s", locationId, beginTime, endTime, order, limit, status), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -584,7 +584,7 @@ func CreateRefund(token, locationId string, reqObj *CreateRefundReqObject) (*Ref
 // The maximum number of refunds to return in a single response. This value cannot exceed
 // 200.This value is always an integer.Default value: 100
 func ListRefunds(token, locationId, beginTime, endTime, order string, limit int) ([]*Refund, *NextRequest, error) {
-	v := make([]*Refund)
+	v := make([]*Refund, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/refunds?begin_time=%s&end_time=%s&order=%s&limit=%d", locationId, beginTime, endTime, order, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -601,7 +601,7 @@ func ListRefunds(token, locationId, beginTime, endTime, order string, limit int)
 // Indicates whether orders are listed in chronological (ASC) or
 // reverse-chronological (DESC) order.Default value: ASC
 func ListOrders(token, locationId string, limit int, order string) ([]*Order, *NextRequest, error) {
-	v := make([]*Order)
+	v := make([]*Order, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/orders?limit=%d&order=%s", locationId, limit, order), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -652,7 +652,7 @@ func UpdateOrder(token, locationId, orderId string, reqObj *UpdateOrderReqObject
 //
 // Required permissions:  BANK_ACCOUNTS_READ
 func ListBankAccounts(token, locationId string) ([]*BankAccount, *NextRequest, error) {
-	v := make([]*BankAccount)
+	v := make([]*BankAccount, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/bank-accounts", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -720,7 +720,7 @@ func CreateItem(token, locationId string, reqObj *CreateItemReqObject) (*Item, e
 //
 // Required permissions:  ITEMS_READ
 func ListItems(token, locationId string) ([]*Item, *NextRequest, error) {
-	v := make([]*Item)
+	v := make([]*Item, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/items", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -789,9 +789,9 @@ func UpdateItem(token, locationId, itemId string, reqObj *UpdateItemReqObject) (
 func DeleteItem(token, locationId, itemId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s", locationId, itemId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // Uploads a JPEG or PNG image and sets it as the master image for an item. See this article for recommended
@@ -815,12 +815,12 @@ func DeleteItem(token, locationId, itemId string) error {
 // Required permissions:  ITEMS_WRITE
 func UploadItemImage(token, locationId, itemId, imageName, imageMime string, body io.Reader) (*ItemImage, error) {
 	v := new(ItemImage)
-	b := bytes.NewBuffer(make([]byte))
+	b := bytes.NewBuffer(make([]byte, 0))
 	bw := multipart.NewWriter(b)
 	boundary := bw.Boundary()
 	mh := make(textproto.MIMEHeader)
 	mh.Set("Content-Type", imageMime)
-	mh.Set("Content-Disposition", fmt.Sprtinf(`form-data; name="image_data"; filename="%s"`, imageName))
+	mh.Set("Content-Disposition", fmt.Sprintf(`form-data; name="image_data"; filename="%s"`, imageName))
 	pw, err := bw.CreatePart(mh)
 	if err != nil {
 		return nil, err
@@ -922,9 +922,9 @@ func UpdateVariation(token, locationId, itemId, variationId string, reqObj *Upda
 func DeleteVariation(token, locationId, itemId, variationId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/variations/%s", locationId, itemId, variationId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // Provides inventory information for all of a merchant's inventory-enabled item variations.
@@ -938,7 +938,7 @@ func DeleteVariation(token, locationId, itemId, variationId string) error {
 // The maximum number of inventory entries to return in a single response. This value
 // cannot exceed 1000.This value is always an integer.Default value: 1000
 func ListInventory(token, locationId string, limit int) ([]*InventoryEntry, *NextRequest, error) {
-	v := make([]*InventoryEntry)
+	v := make([]*InventoryEntry, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/inventory?limit=%d", locationId, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1004,7 +1004,7 @@ func CreateModifierList(token, locationId string, reqObj *CreateModifierListReqO
 //
 // Required permissions:  ITEMS_READ
 func ListModifierLists(token, locationId string) ([]*ModifierList, *NextRequest, error) {
-	v := make([]*ModifierList)
+	v := make([]*ModifierList, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/modifier-lists", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1053,9 +1053,9 @@ func UpdateModifierList(token, locationId, modifierListId string, reqObj *Update
 func DeleteModifierList(token, locationId, modifierListId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/modifier-lists/%s", locationId, modifierListId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // Associates a modifier list with an item, meaning modifier options from the list can be
@@ -1078,9 +1078,9 @@ func ApplyModifierList(token, locationId, itemId, modifierListId string) (*Item,
 func RemoveModifierList(token, locationId, itemId, modifierListId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/modifier-lists/%s", locationId, itemId, modifierListId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
@@ -1142,9 +1142,9 @@ func UpdateModifierOption(token, locationId, modifierListId, modifierOptionId st
 func DeleteModifierOption(token, locationId, modifierListId, modifierOptionId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/modifier-lists/%s/modifier-options/%s", locationId, modifierListId, modifierOptionId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
@@ -1176,7 +1176,7 @@ func CreateCategory(token, locationId string, reqObj *CreateCategoryReqObject) (
 //
 // Required permissions:  ITEMS_READ
 func ListCategories(token, locationId string) ([]*Category, *NextRequest, error) {
-	v := make([]*Category)
+	v := make([]*Category, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/categories", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1211,9 +1211,9 @@ func UpdateCategory(token, locationId, categoryId string, reqObj *UpdateCategory
 func DeleteCategory(token, locationId, categoryId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/categories/%s", locationId, categoryId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
@@ -1257,7 +1257,7 @@ func CreateDiscount(token, locationId string, reqObj *CreateDiscountReqObject) (
 //
 // Required permissions:  ITEMS_READ
 func ListDiscounts(token, locationId string) ([]*Discount, *NextRequest, error) {
-	v := make([]*Discount)
+	v := make([]*Discount, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/discounts", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1304,9 +1304,9 @@ func UpdateDiscount(token, locationId, discountId string, reqObj *UpdateDiscount
 func DeleteDiscount(token, locationId, discountId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/discounts/%s", locationId, discountId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
@@ -1324,7 +1324,7 @@ type CreateFeeReqObject struct {
 	CalculationPhase string `json:"calculation_phase"`
 	// The type of adjustment the fee applies to a payment. Currently, this value is
 	// TAX for all fees.Default value: TAX
-	AdjustmentType sring `json:"adjustment_type"`
+	AdjustmentType string `json:"adjustment_type"`
 	// If true, the fee applies to custom amounts entered into Square Register that are
 	// not associated with a particular item.Default value: true
 	AppliesToCustomAmounts bool `json:"applies_to_custom_amounts"`
@@ -1350,7 +1350,7 @@ func CreateFee(token, locationId string, reqObj *CreateFeeReqObject) (*Fee, erro
 //
 // Required permissions:  ITEMS_READ
 func ListFees(token, locationId string) ([]*Fee, *NextRequest, error) {
-	v := make([]*Fee)
+	v := make([]*Fee, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/fees", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1398,9 +1398,9 @@ func UpdateFee(token, locationId, feeId string, reqObj *UpdateFeeReqObject) (*Fe
 func DeleteFee(token, locationId, feeId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/fees/%s", locationId, feeId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // Associates a fee with an item, meaning the fee is automatically applied to the item in Square
@@ -1423,9 +1423,9 @@ func ApplyFee(token, locationId, itemId, feeId string) (*Item, error) {
 func RemoveFee(token, locationId, itemId, feeId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/fees/%s", locationId, itemId, feeId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
@@ -1464,7 +1464,7 @@ func CreatePage(token, locationId string, reqObj *CreatePageReqObject) (*Page, e
 //
 // Required permissions:  ITEMS_READ
 func ListPages(token, locationId string) ([]*Page, *NextRequest, error) {
-	v := make([]*Page)
+	v := make([]*Page, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/pages", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1500,9 +1500,9 @@ func UpdatePage(token, locationId, pageId string, reqObj *UpdatePageReqObject) (
 func DeletePage(token, locationId, pageId string) error {
 	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/pages/%s", locationId, pageId), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
@@ -1547,12 +1547,12 @@ func UpdateCell(token, locationId, pageId string, reqObj *UpdateCellReqObject) (
 // `column`:
 // The column of the cell to clear. Always an integer between 0 and 4,
 // inclusive. Column 0 is the leftmost column.
-func DeleteCell(token, locationId, pageId string, row number, column number) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/pages/%s/cells?row=%s&column=%s", locationId, pageId, row, column), token, nil, nil)
+func DeleteCell(token, locationId, pageId string, row, column int) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/pages/%s/cells?row=%d&column=%d", locationId, pageId, row, column), token, nil, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
@@ -1573,7 +1573,7 @@ func SubmitBatch(token string, reqObj *SubmitBatchReqObject) ([]*BatchResponse, 
 	if len(reqObj.Requests) > 30 {
 		return nil, nil, fmt.Errorf("You cannot submit more than 30 requests to `/v1/batch`")
 	}
-	v := make([]*BatchResponse)
+	v := make([]*BatchResponse, 0)
 	nr, err := squareRequest("POST", "/v1/batch", token, reqObj, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1582,8 +1582,8 @@ func SubmitBatch(token string, reqObj *SubmitBatchReqObject) ([]*BatchResponse, 
 }
 
 // Lists which types of events trigger webhook notifications for a particular location.
-func ListWebhooks(token, locationId string) ([]*WebhookEventType, *NextRequest, error) {
-	v := make([]*WebhookEventType)
+func ListWebhooks(token, locationId string) ([]string, *NextRequest, error) {
+	v := make([]string, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/webhooks", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1595,8 +1595,8 @@ func ListWebhooks(token, locationId string) ([]*WebhookEventType, *NextRequest, 
 //
 // Simply provide a JSON array of the event types you want notifications for in your request
 // body (see Example Requests below).
-func UpdateWebhooks(token, locationId string) ([]*WebhookEventType, *NextRequest, error) {
-	v := make([]*WebhookEventType)
+func UpdateWebhooks(token, locationId string) ([]string, *NextRequest, error) {
+	v := make([]string, 0)
 	nr, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/webhooks", locationId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1625,7 +1625,7 @@ func UpdateWebhooks(token, locationId string) ([]*WebhookEventType, *NextRequest
 // The maximum number of subscriptions to return in a single response. This value cannot
 // exceed 200.Default value: 100
 func ListSubscriptions(token, clientId, merchantId string, limit int) ([]*Subscription, *NextRequest, error) {
-	v := make([]*Subscription)
+	v := make([]*Subscription, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/subscriptions?merchant_id=%s&limit=%d", clientId, merchantId, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1652,7 +1652,7 @@ func RetrieveSubscription(token, clientId, subscriptionId string) (*Subscription
 // Important: The Authorization header you provide to this endpoint must have the
 // following format:
 func ListSubscriptionPlans(token, clientId string) ([]*SubscriptionPlan, *NextRequest, error) {
-	v := make([]*SubscriptionPlan)
+	v := make([]*SubscriptionPlan, 0)
 	nr, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/plans", clientId), token, nil, &v)
 	if err != nil {
 		return nil, nil, err

@@ -23,7 +23,7 @@ type NextRequest struct {
 }
 
 func (nr *NextRequest) GetNextRequest(result interface{}) (*NextRequest, error) {
-	return squareRequest("GET", nr.uri, token, nil, result)
+	return squareRequest("GET", nr.uri, nr.token, nil, result)
 }
 
 func squareRequest(method, action, token string, reqObj interface{}, result interface{}) (*NextRequest, error) {
@@ -111,7 +111,7 @@ func GetToken(authorizationCode, applicationId, applicationSecret string) (*Toke
 		"client_secret": applicationSecret,
 	}
 	t := new(Token)
-	if err := squareRequest("POST", "/oauth2/token", applicationSecret, &reqObj, t); err != nil {
+	if _, err := squareRequest("POST", "/oauth2/token", applicationSecret, &reqObj, t); err != nil {
 		return nil, err
 	}
 	return t, nil
@@ -123,7 +123,7 @@ func RenewToken(expiredToken, applicationId, applicationSecret string) (*Token, 
 		"access_token": expiredToken,
 	}
 	t := new(Token)
-	if err := squareRequest("POST",
+	if _, err := squareRequest("POST",
 		fmt.Sprintf("/oauth2/clients/%s/access-token/renew", applicationId),
 		applicationSecret, &reqObj, t); err != nil {
 		return nil, err
