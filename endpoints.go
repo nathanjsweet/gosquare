@@ -44,10 +44,10 @@ type CreateEmployeeReqObject struct {
 	// The employee's last name.
 	LastName string `json:"last_name"`
 	// An optional second ID to associate the employee with an entity in another system.
-	ExternalId string `json:"external_id"`
+	ExternalID string `json:"external_id"`
 	// The ids of the employee's associated roles. Currently, you can specify only one
 	// or zero roles per employee.Default value: []
-	RoleIds []string `json:"role_ids"`
+	RoleIDs []string `json:"role_ids"`
 	// An optional email address to associate with the employee.Note that you cannot edit an existing employee's email address with the Connect API.
 	// You can only set its initial value when creating an employee.
 	Email string `json:"email"`
@@ -98,16 +98,16 @@ func CreateEmployee(token string, reqObj *CreateEmployeeReqObject) (*Employee, e
 // If provided, the endpoint returns only employee entities with the specified
 // status (ACTIVE or INACTIVE).
 //
-// `externalId`:
+// `externalID`:
 // If provided, the endpoint returns only employee entities with the specified
 // external_id.
 //
 // `limit`:
 // The maximum number of employee entities to return in a single response. This value
 // cannot exceed 200.This value is always an integer.Default value: 100
-func ListEmployees(token string, order, beginUpdatedAt, endUpdatedAt, beginCreatedAt, endCreatedAt, status, externalId string, limit int) ([]*Employee, *NextRequest, error) {
+func ListEmployees(token string, order, beginUpdatedAt, endUpdatedAt, beginCreatedAt, endCreatedAt, status, externalID string, limit int) ([]*Employee, *NextRequest, error) {
 	v := make([]*Employee, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/me/employees?order=%s&begin_updated_at=%s&end_updated_at=%s&begin_created_at=%s&end_created_at=%s&status=%s&external_id=%s&limit=%d", order, beginUpdatedAt, endUpdatedAt, beginCreatedAt, endCreatedAt, status, externalId, limit), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/me/employees?order=%s&begin_updated_at=%s&end_updated_at=%s&begin_created_at=%s&end_created_at=%s&status=%s&external_id=%s&limit=%d", order, beginUpdatedAt, endUpdatedAt, beginCreatedAt, endCreatedAt, status, externalID, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -117,9 +117,9 @@ func ListEmployees(token string, order, beginUpdatedAt, endUpdatedAt, beginCreat
 // Provides the details for a single employee.
 //
 // Required permissions:  EMPLOYEES_READ
-func RetrieveEmployee(token, employeeId string) (*Employee, error) {
+func RetrieveEmployee(token, employeeID string) (*Employee, error) {
 	v := new(Employee)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/me/employees/%s", employeeId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/me/employees/%s", employeeID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -133,18 +133,18 @@ type UpdateEmployeeReqObject struct {
 	// The employee's last name.
 	LastName string `json:"last_name"`
 	// An optional second ID to associate the employee with an entity in another system.
-	ExternalId string `json:"external_id"`
+	ExternalID string `json:"external_id"`
 	// The employee's associated roles. Currently, you can specify only one or zero roles per
 	// employee.
-	RoleIds []string `json:"role_ids"`
+	RoleIDs []string `json:"role_ids"`
 }
 
 // Modifies the details of an employee.
 //
 // Required permissions:  EMPLOYEES_WRITE
-func UpdateEmployee(token, employeeId string, reqObj *UpdateEmployeeReqObject) (*Employee, error) {
+func UpdateEmployee(token, employeeID string, reqObj *UpdateEmployeeReqObject) (*Employee, error) {
 	v := new(Employee)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/me/employees/%s", employeeId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/me/employees/%s", employeeID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -196,9 +196,9 @@ func ListRoles(token, order string, limit int) ([]*EmployeeRole, *NextRequest, e
 // Provides the details for a single employee role.
 //
 // Required permissions:  EMPLOYEES_READ
-func RetrieveRole(token, roleId string) (*EmployeeRole, error) {
+func RetrieveRole(token, roleID string) (*EmployeeRole, error) {
 	v := new(EmployeeRole)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/me/roles/%s", roleId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/me/roles/%s", roleID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -219,9 +219,9 @@ type UpdateRoleReqObject struct {
 // Modifies the details of an employee role.
 //
 // Required permissions:  EMPLOYEES_WRITE
-func UpdateRole(token, roleId string, reqObj *UpdateRoleReqObject) (*EmployeeRole, error) {
+func UpdateRole(token, roleID string, reqObj *UpdateRoleReqObject) (*EmployeeRole, error) {
 	v := new(EmployeeRole)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/me/roles/%s", roleId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/me/roles/%s", roleID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -231,17 +231,17 @@ func UpdateRole(token, roleId string, reqObj *UpdateRoleReqObject) (*EmployeeRol
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
 type CreateTimecardReqObject struct {
 	// The employee to create a timecard for.
-	EmployeeId string `json:"employee_id"`
+	EmployeeID string `json:"employee_id"`
 	// The clock-in time for the timecard, in ISO 8601 format.Default value: The current time.
 	ClockinTime string `json:"clockin_time"`
 	// The clock-out time for the timecard, in ISO 8601 format.
 	// Provide this value only if importing timecard information from another system.
 	ClockoutTime string `json:"clockout_time"`
 	// The ID of the location the employee clocked in from, if any.
-	ClockinLocationId string `json:"clockin_location_id"`
+	ClockinLocationID string `json:"clockin_location_id"`
 	// The ID of the location the employee clocked out from. Provide this value only if
 	// importing timecard information from another system.If you provide this value, you must also provide a value for clockout_time.
-	ClockoutLocationId string `json:"clockout_location_id"`
+	ClockoutLocationID string `json:"clockout_location_id"`
 }
 
 // Creates a timecard for an employee. Each timecard corresponds to a single shift.
@@ -267,7 +267,7 @@ func CreateTimecard(token string, reqObj *CreateTimecardReqObject) (*Timecard, e
 // The order in which timecards are listed in the response, based on their
 // created_at field.Default value: ASC
 //
-// `employeeId`:
+// `employeeID`:
 // If provided, the endpoint returns only timecards for the employee with the specified
 // ID.
 //
@@ -307,11 +307,11 @@ func CreateTimecard(token string, reqObj *CreateTimecardReqObject) (*Timecard, e
 // `limit`:
 // The maximum number of timecards to return in a single response. This value cannot
 // exceed 200.This value is always an integer.
-func ListTimecards(token, order, employeeId, beginClockinTime, endClockinTime, beginClockoutTime, endClockoutTime, beginUpdatedAt, endUpdatedAt string, deleted bool, limit int) ([]*Timecard, *NextRequest, error) {
+func ListTimecards(token, order, employeeID, beginClockinTime, endClockinTime, beginClockoutTime, endClockoutTime, beginUpdatedAt, endUpdatedAt string, deleted bool, limit int) ([]*Timecard, *NextRequest, error) {
 	v := make([]*Timecard, 0)
 	nr, err := squareRequest("GET",
 		fmt.Sprintf("/v1/me/timecards?order=%s&employee_id=%s&begin_clockin_time=%s&end_clockin_time=%s&begin_clockout_time=%s&end_clockout_time=%s&begin_updated_at=%s&end_updated_at=%s&deleted=%t&limit=%d",
-			order, employeeId, beginClockinTime, endClockinTime, beginClockoutTime, endClockoutTime, beginUpdatedAt, endUpdatedAt, deleted, limit), token, nil, &v)
+			order, employeeID, beginClockinTime, endClockinTime, beginClockoutTime, endClockoutTime, beginUpdatedAt, endUpdatedAt, deleted, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -321,9 +321,9 @@ func ListTimecards(token, order, employeeId, beginClockinTime, endClockinTime, b
 // Currently, only approved merchants can manage their employees with Square. Unapproved merchants cannot use employee management features you include in your application.
 // Provides the details for a single timecard.
 // Required permissions: TIMECARDS_READ
-func RetrieveTimecard(token, timecardId string) (*Timecard, error) {
+func RetrieveTimecard(token, timecardID string) (*Timecard, error) {
 	v := new(Timecard)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/me/timecards/%s", timecardId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/me/timecards/%s", timecardID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -337,9 +337,9 @@ type UpdateTimecardReqObject struct {
 	// The clock-out time for the timecard, in ISO 8601 format.
 	ClockoutTime string `json:"clockout_time"`
 	// The ID of the location the employee clocked in from, if any.
-	ClockinLocationId string `json:"clockin_location_id"`
+	ClockinLocationID string `json:"clockin_location_id"`
 	// The ID of the location the employee clocked out from, if any.
-	ClockoutLocationId string `json:"clockout_location_id"`
+	ClockoutLocationID string `json:"clockout_location_id"`
 }
 
 // Modifies a timecard's details. This creates an API_EDIT event for the timecard. You
@@ -347,17 +347,17 @@ type UpdateTimecardReqObject struct {
 // Events endpoint.
 //
 // Required permissions:  TIMECARDS_WRITE
-func UpdateTimecard(token, timecardId string, reqObj *UpdateTimecardReqObject) (*Timecard, error) {
+func UpdateTimecard(token, timecardID string, reqObj *UpdateTimecardReqObject) (*Timecard, error) {
 	v := new(Timecard)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/me/timecards/%s", timecardId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/me/timecards/%s", timecardID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
 	return v, nil
 }
 
-func DeleteTimecard(token, timecardId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/me/timecards/%s", timecardId), token, nil, nil)
+func DeleteTimecard(token, timecardID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/me/timecards/%s", timecardID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -367,9 +367,9 @@ func DeleteTimecard(token, timecardId string) error {
 // Provides summary information for all events associated with a particular timecard.
 //
 // Required permissions:  TIMECARDS_READ
-func ListTimecardEvents(token, timecardId string) ([]*TimecardEvent, *NextRequest, error) {
+func ListTimecardEvents(token, timecardID string) ([]*TimecardEvent, *NextRequest, error) {
 	v := make([]*TimecardEvent, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/me/timecards/%s/events", timecardId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/me/timecards/%s/events", timecardID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -395,9 +395,9 @@ func ListTimecardEvents(token, timecardId string) ([]*TimecardEvent, *NextReques
 // `order`:
 // The order in which cash drawer shifts are listed in the response, based on their
 // created_at field.Default value: ASC
-func ListCashDrawerShifts(token, locationId, beginTime, endTime, order string) ([]*CashDrawerShift, *NextRequest, error) {
+func ListCashDrawerShifts(token, locationID, beginTime, endTime, order string) ([]*CashDrawerShift, *NextRequest, error) {
 	v := make([]*CashDrawerShift, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/cash-drawer-shifts?begin_time=%s&end_time=%s&order=%s", locationId, beginTime, endTime, order), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/cash-drawer-shifts?begin_time=%s&end_time=%s&order=%s", locationID, beginTime, endTime, order), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -408,9 +408,9 @@ func ListCashDrawerShifts(token, locationId, beginTime, endTime, order string) (
 // during the shift.
 //
 // Required permissions:  PAYMENTS_READ
-func RetrieveCashDrawerShift(token, locationId, shiftId string) (*CashDrawerShift, error) {
+func RetrieveCashDrawerShift(token, locationID, shiftID string) (*CashDrawerShift, error) {
 	v := new(CashDrawerShift)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/cash-drawer-shifts/%s", locationId, shiftId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/cash-drawer-shifts/%s", locationID, shiftID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -438,9 +438,9 @@ func RetrieveCashDrawerShift(token, locationId, shiftId string) (*CashDrawerShif
 // `limit`:
 // The maximum number of payments to return in a single response. This value cannot exceed
 // 200.This value is always an integer.Default value: 100
-func ListPayments(token, locationId, beginTime, endTime, order string, limit int) ([]*Payment, *NextRequest, error) {
+func ListPayments(token, locationID, beginTime, endTime, order string, limit int) ([]*Payment, *NextRequest, error) {
 	v := make([]*Payment, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/payments?begin_time=%s&end_time=%s&order=%s&limit=%d", locationId, beginTime, endTime, order, limit), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/payments?begin_time=%s&end_time=%s&order=%s&limit=%d", locationID, beginTime, endTime, order, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -450,9 +450,9 @@ func ListPayments(token, locationId, beginTime, endTime, order string, limit int
 // Provides comprehensive information for a single payment.
 //
 // Required permissions:  PAYMENTS_READ
-func RetrievePayment(token, locationId, paymentId string) (*Payment, error) {
+func RetrievePayment(token, locationID, paymentID string) (*Payment, error) {
 	v := new(Payment)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/payments/%s", locationId, paymentId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/payments/%s", locationID, paymentID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -498,9 +498,9 @@ func RetrievePayment(token, locationId, paymentId string) (*Payment, error) {
 // `status`:
 // Provide this parameter to retrieve only settlements with a particular status
 // (SENT or FAILED).
-func ListSettlements(token, locationId, beginTime, endTime, order string, limit int, status string) ([]*Settlement, *NextRequest, error) {
+func ListSettlements(token, locationID, beginTime, endTime, order string, limit int, status string) ([]*Settlement, *NextRequest, error) {
 	v := make([]*Settlement, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/settlements?begin_time=%s&end_time=%s&order=%s&limit=%d&status=%s", locationId, beginTime, endTime, order, limit, status), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/settlements?begin_time=%s&end_time=%s&order=%s&limit=%d&status=%s", locationID, beginTime, endTime, order, limit, status), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -514,9 +514,9 @@ func ListSettlements(token, locationId, beginTime, endTime, order string, limit 
 // descriptions of the types of entries that compose a settlement.
 //
 // Required permissions:  SETTLEMENTS_READ
-func RetrieveSettlement(token, locationId, settlementId string) (*Settlement, error) {
+func RetrieveSettlement(token, locationID, settlementID string) (*Settlement, error) {
 	v := new(Settlement)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/settlements/%s", locationId, settlementId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/settlements/%s", locationID, settlementID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -527,7 +527,7 @@ func RetrieveSettlement(token, locationId, settlementId string) (*Settlement, er
 type CreateRefundReqObject struct {
 	// The ID of the payment to refund.If you're creating a PARTIAL refund for a split tender payment, instead provide
 	// the id of the particular tender you want to refund. See Split Tender Payments for details.
-	PaymentId string `json:"payment_id"`
+	PaymentID string `json:"payment_id"`
 	// The type of refund (FULL or PARTIAL).
 	Type string `json:"type"`
 	// The reason for the refund.
@@ -540,7 +540,7 @@ type CreateRefundReqObject struct {
 	// request_idempotence_key. If you want to issue another partial refund for
 	// the same payment, you must use a request_idempotence_key that is unique among
 	// refunds you have issued for the payment.
-	RequestIdempotenceKey string `json:"request_idempotence_key"`
+	RequestIDempotenceKey string `json:"request_idempotence_key"`
 }
 
 // Issues a refund for a previously processed payment. You must issue a refund within 60 days of
@@ -554,9 +554,9 @@ type CreateRefundReqObject struct {
 // specify the amount of money to refund.
 //
 // Required permissions:  PAYMENTS_WRITE
-func CreateRefund(token, locationId string, reqObj *CreateRefundReqObject) (*Refund, error) {
+func CreateRefund(token, locationID string, reqObj *CreateRefundReqObject) (*Refund, error) {
 	v := new(Refund)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/refunds", locationId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/refunds", locationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -583,9 +583,9 @@ func CreateRefund(token, locationId string, reqObj *CreateRefundReqObject) (*Ref
 // `limit`:
 // The maximum number of refunds to return in a single response. This value cannot exceed
 // 200.This value is always an integer.Default value: 100
-func ListRefunds(token, locationId, beginTime, endTime, order string, limit int) ([]*Refund, *NextRequest, error) {
+func ListRefunds(token, locationID, beginTime, endTime, order string, limit int) ([]*Refund, *NextRequest, error) {
 	v := make([]*Refund, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/refunds?begin_time=%s&end_time=%s&order=%s&limit=%d", locationId, beginTime, endTime, order, limit), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/refunds?begin_time=%s&end_time=%s&order=%s&limit=%d", locationID, beginTime, endTime, order, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -600,18 +600,18 @@ func ListRefunds(token, locationId, beginTime, endTime, order string, limit int)
 // `order`:
 // Indicates whether orders are listed in chronological (ASC) or
 // reverse-chronological (DESC) order.Default value: ASC
-func ListOrders(token, locationId string, limit int, order string) ([]*Order, *NextRequest, error) {
+func ListOrders(token, locationID string, limit int, order string) ([]*Order, *NextRequest, error) {
 	v := make([]*Order, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/orders?limit=%d&order=%s", locationId, limit, order), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/orders?limit=%d&order=%s", locationID, limit, order), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
 	return v, nr, nil
 }
 
-func RetrieveOrder(token, locationId, orderId string) (*Order, error) {
+func RetrieveOrder(token, locationID, orderID string) (*Order, error) {
 	v := new(Order)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/orders/%s", locationId, orderId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/orders/%s", locationID, orderID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -637,9 +637,9 @@ type UpdateOrderReqObject struct {
 	CanceledNote string `json:"canceled_note"`
 }
 
-func UpdateOrder(token, locationId, orderId string, reqObj *UpdateOrderReqObject) (*Order, error) {
+func UpdateOrder(token, locationID, orderID string, reqObj *UpdateOrderReqObject) (*Order, error) {
 	v := new(Order)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/orders/%s", locationId, orderId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/orders/%s", locationID, orderID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -651,9 +651,9 @@ func UpdateOrder(token, locationId, orderId string, reqObj *UpdateOrderReqObject
 // full bank account number with the Connect API.
 //
 // Required permissions:  BANK_ACCOUNTS_READ
-func ListBankAccounts(token, locationId string) ([]*BankAccount, *NextRequest, error) {
+func ListBankAccounts(token, locationID string) ([]*BankAccount, *NextRequest, error) {
 	v := make([]*BankAccount, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/bank-accounts", locationId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/bank-accounts", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -665,9 +665,9 @@ func ListBankAccounts(token, locationId string) ([]*BankAccount, *NextRequest, e
 // account number with the Connect API.
 //
 // Required permissions:  BANK_ACCOUNTS_READ
-func RetrieveBankAccount(token, locationId, bankAccountId string) (*BankAccount, error) {
+func RetrieveBankAccount(token, locationID, bankAccountID string) (*BankAccount, error) {
 	v := new(BankAccount)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/bank-accounts/%s", locationId, bankAccountId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/bank-accounts/%s", locationID, bankAccountID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -679,13 +679,13 @@ type CreateItemReqObject struct {
 	// The item's ID. Must be unique among all entity IDs ever provided on behalf of the
 	// merchant. You can never reuse an ID. This value can include alphanumeric
 	// characters, dashes (-), and underscores (_).If you don't provide this value, an ID is generated by Square.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The item's name.
 	Name string `json:"name"`
 	// The item's description.
 	Description string `json:"description"`
 	// The ID of the item's category, if any.
-	CategoryId string `json:"category_id"`
+	CategoryID string `json:"category_id"`
 	// The color of the item's display label in Square Register.Default value: 9da2a6
 	Color string `json:"color"`
 	// The text of the item's display label in Square Register. Only up to the first five
@@ -707,9 +707,9 @@ type CreateItemReqObject struct {
 // Creates an item and at least one variation for it.
 //
 // Required permissions:  ITEMS_WRITE
-func CreateItem(token, locationId string, reqObj *CreateItemReqObject) (*Item, error) {
+func CreateItem(token, locationID string, reqObj *CreateItemReqObject) (*Item, error) {
 	v := new(Item)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/items", locationId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/items", locationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -719,9 +719,9 @@ func CreateItem(token, locationId string, reqObj *CreateItemReqObject) (*Item, e
 // Provides summary information for all of a location's items.
 //
 // Required permissions:  ITEMS_READ
-func ListItems(token, locationId string) ([]*Item, *NextRequest, error) {
+func ListItems(token, locationID string) ([]*Item, *NextRequest, error) {
 	v := make([]*Item, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/items", locationId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/items", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -731,9 +731,9 @@ func ListItems(token, locationId string) ([]*Item, *NextRequest, error) {
 // Provides the details for a single item, including associated modifier lists and fees.
 //
 // Required permissions:  ITEMS_READ
-func RetrieveItem(token, locationId, itemId string) (*Item, error) {
+func RetrieveItem(token, locationID, itemID string) (*Item, error) {
 	v := new(Item)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/items/%s", locationId, itemId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/items/%s", locationID, itemID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -748,7 +748,7 @@ type UpdateItemReqObject struct {
 	Description string `json:"description"`
 	// The ID of the item's category, if any.If you provide the empty string for this value, any existing category association is
 	// removed from the item.
-	CategoryId string `json:"category_id"`
+	CategoryID string `json:"category_id"`
 	// The color of the item's display label in Square Register.
 	Color string `json:"color"`
 	// The text of the item's display label in Square Register. Only up to the first five
@@ -774,9 +774,9 @@ type UpdateItemReqObject struct {
 // instead.
 //
 // Required permissions:  ITEMS_WRITE
-func UpdateItem(token, locationId, itemId string, reqObj *UpdateItemReqObject) (*Item, error) {
+func UpdateItem(token, locationID, itemID string, reqObj *UpdateItemReqObject) (*Item, error) {
 	v := new(Item)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/items/%s", locationId, itemId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/items/%s", locationID, itemID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -786,8 +786,8 @@ func UpdateItem(token, locationId, itemId string, reqObj *UpdateItemReqObject) (
 // Deletes an existing item and all item variations associated with it.
 //
 // Required permissions:  ITEMS_WRITE
-func DeleteItem(token, locationId, itemId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s", locationId, itemId), token, nil, nil)
+func DeleteItem(token, locationID, itemID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s", locationID, itemID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -813,7 +813,7 @@ func DeleteItem(token, locationId, itemId string) error {
 // Note that some HTTP libraries set your request's multipart boundary for you.
 //
 // Required permissions:  ITEMS_WRITE
-func UploadItemImage(token, locationId, itemId, imageName, imageMime string, body io.Reader) (*ItemImage, error) {
+func UploadItemImage(token, locationID, itemID, imageName, imageMime string, body io.Reader) (*ItemImage, error) {
 	v := new(ItemImage)
 	b := bytes.NewBuffer(make([]byte, 0))
 	bw := multipart.NewWriter(b)
@@ -830,7 +830,7 @@ func UploadItemImage(token, locationId, itemId, imageName, imageMime string, bod
 	if err != nil {
 		return nil, err
 	}
-	_, err = baseSquareRequest("POST", fmt.Sprintf("/v1/%s/items/%s/image", locationId, itemId), token, fmt.Sprintf("multipart/form-data; boundary=%s", boundary), b, v)
+	_, err = baseSquareRequest("POST", fmt.Sprintf("/v1/%s/items/%s/image", locationID, itemID), token, fmt.Sprintf("multipart/form-data; boundary=%s", boundary), b, v)
 	if err != nil {
 		return nil, err
 	}
@@ -842,7 +842,7 @@ type CreateVariationReqObject struct {
 	// The variation's ID. Must be unique among all entity IDs ever provided on behalf of the
 	// merchant. You can never reuse an ID. This value can include alphanumeric
 	// characters, dashes (-), and underscores (_).If you don't provide this value, an ID is generated by Square.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The item variation's name.
 	Name string `json:"name"`
 	// Indicates whether the item variation's price is fixed or determined at the time of
@@ -868,9 +868,9 @@ type CreateVariationReqObject struct {
 // Creates an item variation for an existing item.
 //
 // Required permissions:  ITEMS_WRITE
-func CreateVariation(token, locationId, itemId string, reqObj *CreateVariationReqObject) (*ItemVariation, error) {
+func CreateVariation(token, locationID, itemID string, reqObj *CreateVariationReqObject) (*ItemVariation, error) {
 	v := new(ItemVariation)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/items/%s/variations", locationId, itemId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/items/%s/variations", locationID, itemID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -904,9 +904,9 @@ type UpdateVariationReqObject struct {
 // Modifies the details of an existing item variation.
 //
 // Required permissions:  ITEMS_WRITE
-func UpdateVariation(token, locationId, itemId, variationId string, reqObj *UpdateVariationReqObject) (*ItemVariation, error) {
+func UpdateVariation(token, locationID, itemID, variationID string, reqObj *UpdateVariationReqObject) (*ItemVariation, error) {
 	v := new(ItemVariation)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/items/%s/variations/%s", locationId, itemId, variationId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/items/%s/variations/%s", locationID, itemID, variationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -919,8 +919,8 @@ func UpdateVariation(token, locationId, itemId, variationId string, reqObj *Upda
 // delete an item's only variation.
 //
 // Required permissions:  ITEMS_WRITE
-func DeleteVariation(token, locationId, itemId, variationId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/variations/%s", locationId, itemId, variationId), token, nil, nil)
+func DeleteVariation(token, locationID, itemID, variationID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/variations/%s", locationID, itemID, variationID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -937,9 +937,9 @@ func DeleteVariation(token, locationId, itemId, variationId string) error {
 // `limit`:
 // The maximum number of inventory entries to return in a single response. This value
 // cannot exceed 1000.This value is always an integer.Default value: 1000
-func ListInventory(token, locationId string, limit int) ([]*InventoryEntry, *NextRequest, error) {
+func ListInventory(token, locationID string, limit int) ([]*InventoryEntry, *NextRequest, error) {
 	v := make([]*InventoryEntry, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/inventory?limit=%d", locationId, limit), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/inventory?limit=%d", locationID, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -963,9 +963,9 @@ type AdjustInventoryReqObject struct {
 // variation for inventory tracking.
 //
 // Required permissions:  ITEMS_WRITE
-func AdjustInventory(token, locationId, variationId string, reqObj *AdjustInventoryReqObject) (*InventoryEntry, error) {
+func AdjustInventory(token, locationID, variationID string, reqObj *AdjustInventoryReqObject) (*InventoryEntry, error) {
 	v := new(InventoryEntry)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/inventory/%s", locationId, variationId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/inventory/%s", locationID, variationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -977,7 +977,7 @@ type CreateModifierListReqObject struct {
 	// The modifier list's ID. Must be unique among all entity IDs ever provided on behalf of
 	// the merchant. You can never reuse an ID. This value can include alphanumeric
 	// characters, dashes (-), and underscores (_).If you don't provide this value, an ID is generated by Square.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The modifier list's name.
 	Name string `json:"name"`
 	// Indicates whether multiple options from the modifier list can be applied to a single
@@ -991,9 +991,9 @@ type CreateModifierListReqObject struct {
 // Creates an item modifier list and at least one modifier option for it.
 //
 // Required permissions:  ITEMS_WRITE
-func CreateModifierList(token, locationId string, reqObj *CreateModifierListReqObject) (*ModifierList, error) {
+func CreateModifierList(token, locationID string, reqObj *CreateModifierListReqObject) (*ModifierList, error) {
 	v := new(ModifierList)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/modifier-lists", locationId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/modifier-lists", locationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1003,9 +1003,9 @@ func CreateModifierList(token, locationId string, reqObj *CreateModifierListReqO
 // Lists all of a location's modifier lists.
 //
 // Required permissions:  ITEMS_READ
-func ListModifierLists(token, locationId string) ([]*ModifierList, *NextRequest, error) {
+func ListModifierLists(token, locationID string) ([]*ModifierList, *NextRequest, error) {
 	v := make([]*ModifierList, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/modifier-lists", locationId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/modifier-lists", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1015,9 +1015,9 @@ func ListModifierLists(token, locationId string) ([]*ModifierList, *NextRequest,
 // Provides the details for a single modifier list.
 //
 // Required permissions:  ITEMS_READ
-func RetrieveModifierList(token, locationId, modifierListId string) (*ModifierList, error) {
+func RetrieveModifierList(token, locationID, modifierListID string) (*ModifierList, error) {
 	v := new(ModifierList)
-	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/modifier-lists/%s", locationId, modifierListId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/v1/%s/modifier-lists/%s", locationID, modifierListID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1038,9 +1038,9 @@ type UpdateModifierListReqObject struct {
 // If you want to modify the details of a single modifier option, use the Update Modifier Option endpoint instead.
 //
 // Required permissions:  ITEMS_WRITE
-func UpdateModifierList(token, locationId, modifierListId string, reqObj *UpdateModifierListReqObject) (*ModifierList, error) {
+func UpdateModifierList(token, locationID, modifierListID string, reqObj *UpdateModifierListReqObject) (*ModifierList, error) {
 	v := new(ModifierList)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/modifier-lists/%s", locationId, modifierListId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/modifier-lists/%s", locationID, modifierListID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1050,8 +1050,8 @@ func UpdateModifierList(token, locationId, modifierListId string, reqObj *Update
 // Deletes an existing item modifier list and all modifier options associated with it.
 //
 // Required permissions:  ITEMS_WRITE
-func DeleteModifierList(token, locationId, modifierListId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/modifier-lists/%s", locationId, modifierListId), token, nil, nil)
+func DeleteModifierList(token, locationID, modifierListID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/modifier-lists/%s", locationID, modifierListID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1062,9 +1062,9 @@ func DeleteModifierList(token, locationId, modifierListId string) error {
 // applied to the item.
 //
 // Required permissions:  ITEMS_WRITE
-func ApplyModifierList(token, locationId, itemId, modifierListId string) (*Item, error) {
+func ApplyModifierList(token, locationID, itemID, modifierListID string) (*Item, error) {
 	v := new(Item)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/items/%s/modifier-lists/%s", locationId, itemId, modifierListId), token, nil, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/items/%s/modifier-lists/%s", locationID, itemID, modifierListID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1075,8 +1075,8 @@ func ApplyModifierList(token, locationId, itemId, modifierListId string) (*Item,
 // no longer be applied to the item.
 //
 // Required permissions:  ITEMS_WRITE
-func RemoveModifierList(token, locationId, itemId, modifierListId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/modifier-lists/%s", locationId, itemId, modifierListId), token, nil, nil)
+func RemoveModifierList(token, locationID, itemID, modifierListID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/modifier-lists/%s", locationID, itemID, modifierListID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1088,7 +1088,7 @@ type CreateModifierOptionReqObject struct {
 	// The modifier option's ID. Must be unique among all entity IDs ever provided on behalf
 	// of the merchant. You can never reuse an ID. This value can include alphanumeric
 	// characters, dashes (-), and underscores (_).If you don't provide this value, an ID is generated by Square.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The modifier option's name.
 	Name string `json:"name"`
 	// The modifier option's price.
@@ -1101,9 +1101,9 @@ type CreateModifierOptionReqObject struct {
 // Creates an item modifier option and adds it to a modifier list.
 //
 // Required permissions:  ITEMS_WRITE
-func CreateModifierOption(token, locationId, modifierListId string, reqObj *CreateModifierOptionReqObject) (*ModifierOption, error) {
+func CreateModifierOption(token, locationID, modifierListID string, reqObj *CreateModifierOptionReqObject) (*ModifierOption, error) {
 	v := new(ModifierOption)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/modifier-lists/%s/modifier-options", locationId, modifierListId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/modifier-lists/%s/modifier-options", locationID, modifierListID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1124,9 +1124,9 @@ type UpdateModifierOptionReqObject struct {
 // Modifies the details of an existing item modifier option.
 //
 // Required permissions:  ITEMS_WRITE
-func UpdateModifierOption(token, locationId, modifierListId, modifierOptionId string, reqObj *UpdateModifierOptionReqObject) (*ModifierOption, error) {
+func UpdateModifierOption(token, locationID, modifierListID, modifierOptionID string, reqObj *UpdateModifierOptionReqObject) (*ModifierOption, error) {
 	v := new(ModifierOption)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/modifier-lists/%s/modifier-options/%s", locationId, modifierListId, modifierOptionId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/modifier-lists/%s/modifier-options/%s", locationID, modifierListID, modifierOptionID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1139,8 +1139,8 @@ func UpdateModifierOption(token, locationId, modifierListId, modifierOptionId st
 // attempt to delete a modifier list's only option.
 //
 // Required permissions:  ITEMS_WRITE
-func DeleteModifierOption(token, locationId, modifierListId, modifierOptionId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/modifier-lists/%s/modifier-options/%s", locationId, modifierListId, modifierOptionId), token, nil, nil)
+func DeleteModifierOption(token, locationID, modifierListID, modifierOptionID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/modifier-lists/%s/modifier-options/%s", locationID, modifierListID, modifierOptionID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1152,7 +1152,7 @@ type CreateCategoryReqObject struct {
 	// The category's ID. Must be unique among all entity IDs ever provided on behalf of the
 	// merchant. You can never reuse an ID. This value can include alphanumeric
 	// characters, dashes (-), and underscores (_).If you don't provide this value, an ID is generated by Square.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The category's name.
 	Name string `json:"name"`
 }
@@ -1163,9 +1163,9 @@ type CreateCategoryReqObject struct {
 // Item endpoint.
 //
 // Required permissions:  ITEMS_WRITE
-func CreateCategory(token, locationId string, reqObj *CreateCategoryReqObject) (*Category, error) {
+func CreateCategory(token, locationID string, reqObj *CreateCategoryReqObject) (*Category, error) {
 	v := new(Category)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/categories", locationId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/categories", locationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1175,9 +1175,9 @@ func CreateCategory(token, locationId string, reqObj *CreateCategoryReqObject) (
 // Lists all of a location's item categories.
 //
 // Required permissions:  ITEMS_READ
-func ListCategories(token, locationId string) ([]*Category, *NextRequest, error) {
+func ListCategories(token, locationID string) ([]*Category, *NextRequest, error) {
 	v := make([]*Category, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/categories", locationId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/categories", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1196,9 +1196,9 @@ type UpdateCategoryReqObject struct {
 // Item endpoint.
 //
 // Required permissions:  ITEMS_WRITE
-func UpdateCategory(token, locationId, categoryId string, reqObj *UpdateCategoryReqObject) (*Category, error) {
+func UpdateCategory(token, locationID, categoryID string, reqObj *UpdateCategoryReqObject) (*Category, error) {
 	v := new(Category)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/categories/%s", locationId, categoryId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/categories/%s", locationID, categoryID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1208,8 +1208,8 @@ func UpdateCategory(token, locationId, categoryId string, reqObj *UpdateCategory
 // Deletes an existing item category.
 //
 // Required permissions:  ITEMS_WRITE
-func DeleteCategory(token, locationId, categoryId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/categories/%s", locationId, categoryId), token, nil, nil)
+func DeleteCategory(token, locationID, categoryID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/categories/%s", locationID, categoryID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1221,7 +1221,7 @@ type CreateDiscountReqObject struct {
 	// The discount's ID. Must be unique among all entity IDs ever provided on behalf of the
 	// merchant. You can never reuse an ID. This value can include alphanumeric
 	// characters, dashes (-), and underscores (_).If you don't provide this value, an ID is generated by Square.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The discount's name.
 	Name string `json:"name"`
 	// The rate of the discount, as a string representation of a decimal number. A value of
@@ -1244,9 +1244,9 @@ type CreateDiscountReqObject struct {
 // Creates a discount.
 //
 // Required permissions:  ITEMS_WRITE
-func CreateDiscount(token, locationId string, reqObj *CreateDiscountReqObject) (*Discount, error) {
+func CreateDiscount(token, locationID string, reqObj *CreateDiscountReqObject) (*Discount, error) {
 	v := new(Discount)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/discounts", locationId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/discounts", locationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1256,9 +1256,9 @@ func CreateDiscount(token, locationId string, reqObj *CreateDiscountReqObject) (
 // Lists all of a location's discounts.
 //
 // Required permissions:  ITEMS_READ
-func ListDiscounts(token, locationId string) ([]*Discount, *NextRequest, error) {
+func ListDiscounts(token, locationID string) ([]*Discount, *NextRequest, error) {
 	v := make([]*Discount, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/discounts", locationId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/discounts", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1289,9 +1289,9 @@ type UpdateDiscountReqObject struct {
 // Modifies the details of an existing discount.
 //
 // Required permissions:  ITEMS_WRITE
-func UpdateDiscount(token, locationId, discountId string, reqObj *UpdateDiscountReqObject) (*Discount, error) {
+func UpdateDiscount(token, locationID, discountID string, reqObj *UpdateDiscountReqObject) (*Discount, error) {
 	v := new(Discount)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/discounts/%s", locationId, discountId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/discounts/%s", locationID, discountID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1301,8 +1301,8 @@ func UpdateDiscount(token, locationId, discountId string, reqObj *UpdateDiscount
 // Deletes an existing discount.
 //
 // Required permissions:  ITEMS_WRITE
-func DeleteDiscount(token, locationId, discountId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/discounts/%s", locationId, discountId), token, nil, nil)
+func DeleteDiscount(token, locationID, discountID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/discounts/%s", locationID, discountID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1314,7 +1314,7 @@ type CreateFeeReqObject struct {
 	// The fee's ID. Must be unique among all entity IDs ever provided on behalf of the
 	// merchant. You can never reuse an ID. This value can include alphanumeric
 	// characters, dashes (-), and underscores (_).If you don't provide this value, an ID is generated by Square.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The fee's name.
 	Name string `json:"name"`
 	// The rate of the fee, as a string representation of a decimal number. A value of
@@ -1337,9 +1337,9 @@ type CreateFeeReqObject struct {
 // Creates a fee (tax).
 //
 // Required permissions:  ITEMS_WRITE
-func CreateFee(token, locationId string, reqObj *CreateFeeReqObject) (*Fee, error) {
+func CreateFee(token, locationID string, reqObj *CreateFeeReqObject) (*Fee, error) {
 	v := new(Fee)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/fees", locationId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/fees", locationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1349,9 +1349,9 @@ func CreateFee(token, locationId string, reqObj *CreateFeeReqObject) (*Fee, erro
 // Lists all of a location's fees (taxes).
 //
 // Required permissions:  ITEMS_READ
-func ListFees(token, locationId string) ([]*Fee, *NextRequest, error) {
+func ListFees(token, locationID string) ([]*Fee, *NextRequest, error) {
 	v := make([]*Fee, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/fees", locationId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/fees", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1383,9 +1383,9 @@ type UpdateFeeReqObject struct {
 // Modifies the details of an existing fee (tax).
 //
 // Required permissions:  ITEMS_WRITE
-func UpdateFee(token, locationId, feeId string, reqObj *UpdateFeeReqObject) (*Fee, error) {
+func UpdateFee(token, locationID, feeID string, reqObj *UpdateFeeReqObject) (*Fee, error) {
 	v := new(Fee)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/fees/%s", locationId, feeId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/fees/%s", locationID, feeID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1395,8 +1395,8 @@ func UpdateFee(token, locationId, feeId string, reqObj *UpdateFeeReqObject) (*Fe
 // Deletes an existing fee (tax).
 //
 // Required permissions:  ITEMS_WRITE
-func DeleteFee(token, locationId, feeId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/fees/%s", locationId, feeId), token, nil, nil)
+func DeleteFee(token, locationID, feeID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/fees/%s", locationID, feeID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1407,9 +1407,9 @@ func DeleteFee(token, locationId, feeId string) error {
 // Register.
 //
 // Required permissions:  ITEMS_WRITE
-func ApplyFee(token, locationId, itemId, feeId string) (*Item, error) {
+func ApplyFee(token, locationID, itemID, feeID string) (*Item, error) {
 	v := new(Item)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/items/%s/fees/%s", locationId, itemId, feeId), token, nil, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/items/%s/fees/%s", locationID, itemID, feeID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1420,8 +1420,8 @@ func ApplyFee(token, locationId, itemId, feeId string) (*Item, error) {
 // the item in Square Register.
 //
 // Required permissions:  ITEMS_WRITE
-func RemoveFee(token, locationId, itemId, feeId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/fees/%s", locationId, itemId, feeId), token, nil, nil)
+func RemoveFee(token, locationID, itemID, feeID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/items/%s/fees/%s", locationID, itemID, feeID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1433,7 +1433,7 @@ type CreatePageReqObject struct {
 	// The page's ID. Must be unique among all entity IDs ever provided on behalf of the
 	// merchant. You can never reuse an ID. This value can include alphanumeric
 	// characters, dashes (-), and underscores (_).If you don't provide this value, an ID is generated by Square.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The page's name.
 	Name string `json:"name"`
 	// The page's position in the list of pages. Must be an integer between 0 and
@@ -1451,9 +1451,9 @@ type CreatePageReqObject struct {
 // unless at least one of its cells has an assigned value.
 //
 // Required permissions:  ITEMS_WRITE
-func CreatePage(token, locationId string, reqObj *CreatePageReqObject) (*Page, error) {
+func CreatePage(token, locationID string, reqObj *CreatePageReqObject) (*Page, error) {
 	v := new(Page)
-	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/pages", locationId), token, reqObj, v)
+	_, err := squareRequest("POST", fmt.Sprintf("/v1/%s/pages", locationID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1463,9 +1463,9 @@ func CreatePage(token, locationId string, reqObj *CreatePageReqObject) (*Page, e
 // Lists all of a location's Favorites pages in Square Register.
 //
 // Required permissions:  ITEMS_READ
-func ListPages(token, locationId string) ([]*Page, *NextRequest, error) {
+func ListPages(token, locationID string) ([]*Page, *NextRequest, error) {
 	v := make([]*Page, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/pages", locationId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/pages", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1485,9 +1485,9 @@ type UpdatePageReqObject struct {
 // Modifies the details of a Favorites page in Square Register.
 //
 // Required permissions:  ITEMS_WRITE
-func UpdatePage(token, locationId, pageId string, reqObj *UpdatePageReqObject) (*Page, error) {
+func UpdatePage(token, locationID, pageID string, reqObj *UpdatePageReqObject) (*Page, error) {
 	v := new(Page)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/pages/%s", locationId, pageId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/pages/%s", locationID, pageID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1497,8 +1497,8 @@ func UpdatePage(token, locationId, pageId string, reqObj *UpdatePageReqObject) (
 // Deletes an existing Favorites page and all of its cells.
 //
 // Required permissions:  ITEMS_WRITE
-func DeletePage(token, locationId, pageId string) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/pages/%s", locationId, pageId), token, nil, nil)
+func DeletePage(token, locationID, pageID string) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/pages/%s", locationID, pageID), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1518,7 +1518,7 @@ type UpdateCellReqObject struct {
 	ObjectType string `json:"object_type"`
 	// The unique identifier of the entity to represent in the cell. Do not include if the
 	// cell's object_type is PLACEHOLDER.
-	ObjectId string `json:"object_id"`
+	ObjectID string `json:"object_id"`
 	// For a cell with an object_type of PLACEHOLDER, indicates the cell's
 	// behavior.
 	PlaceholderType string `json:"placeholder_type"`
@@ -1527,9 +1527,9 @@ type UpdateCellReqObject struct {
 // Modifies a cell of a Favorites page in Square Register.
 //
 // Required permissions:  ITEMS_WRITE
-func UpdateCell(token, locationId, pageId string, reqObj *UpdateCellReqObject) (*PageCell, error) {
+func UpdateCell(token, locationID, pageID string, reqObj *UpdateCellReqObject) (*PageCell, error) {
 	v := new(PageCell)
-	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/pages/%s/cells", locationId, pageId), token, reqObj, v)
+	_, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/pages/%s/cells", locationID, pageID), token, reqObj, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1547,8 +1547,8 @@ func UpdateCell(token, locationId, pageId string, reqObj *UpdateCellReqObject) (
 // `column`:
 // The column of the cell to clear. Always an integer between 0 and 4,
 // inclusive. Column 0 is the leftmost column.
-func DeleteCell(token, locationId, pageId string, row, column int) error {
-	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/pages/%s/cells?row=%d&column=%d", locationId, pageId, row, column), token, nil, nil)
+func DeleteCell(token, locationID, pageID string, row, column int) error {
+	_, err := squareRequest("DELETE", fmt.Sprintf("/v1/%s/pages/%s/cells?row=%d&column=%d", locationID, pageID, row, column), token, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -1582,9 +1582,9 @@ func SubmitBatch(token string, reqObj *SubmitBatchReqObject) ([]*BatchResponse, 
 }
 
 // Lists which types of events trigger webhook notifications for a particular location.
-func ListWebhooks(token, locationId string) ([]string, *NextRequest, error) {
+func ListWebhooks(token, locationID string) ([]string, *NextRequest, error) {
 	v := make([]string, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/webhooks", locationId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/v1/%s/webhooks", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1595,9 +1595,9 @@ func ListWebhooks(token, locationId string) ([]string, *NextRequest, error) {
 //
 // Simply provide a JSON array of the event types you want notifications for in your request
 // body (see Example Requests below).
-func UpdateWebhooks(token, locationId string) ([]string, *NextRequest, error) {
+func UpdateWebhooks(token, locationID string) ([]string, *NextRequest, error) {
 	v := make([]string, 0)
-	nr, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/webhooks", locationId), token, nil, &v)
+	nr, err := squareRequest("PUT", fmt.Sprintf("/v1/%s/webhooks", locationID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1616,7 +1616,7 @@ func UpdateWebhooks(token, locationId string) ([]string, *NextRequest, error) {
 // Important: The Authorization header you provide to this endpoint must have the
 // following format:
 //
-// `merchantId`:
+// `merchantID`:
 // If you provide this parameter, the endpoint returns only subscription information for
 // the specified merchant.You can get a merchant's ID with the Retrieve
 // Merchant endpoint.
@@ -1624,9 +1624,9 @@ func UpdateWebhooks(token, locationId string) ([]string, *NextRequest, error) {
 // `limit`:
 // The maximum number of subscriptions to return in a single response. This value cannot
 // exceed 200.Default value: 100
-func ListSubscriptions(token, clientId, merchantId string, limit int) ([]*Subscription, *NextRequest, error) {
+func ListSubscriptions(token, clientID, merchantID string, limit int) ([]*Subscription, *NextRequest, error) {
 	v := make([]*Subscription, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/subscriptions?merchant_id=%s&limit=%d", clientId, merchantId, limit), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/subscriptions?merchant_id=%s&limit=%d", clientID, merchantID, limit), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1638,9 +1638,9 @@ func ListSubscriptions(token, clientId, merchantId string, limit int) ([]*Subscr
 //
 // Important: The Authorization header you provide to this endpoint must have the
 // following format:
-func RetrieveSubscription(token, clientId, subscriptionId string) (*Subscription, error) {
+func RetrieveSubscription(token, clientID, subscriptionID string) (*Subscription, error) {
 	v := new(Subscription)
-	_, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/subscriptions/%s", clientId, subscriptionId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/subscriptions/%s", clientID, subscriptionID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}
@@ -1651,18 +1651,18 @@ func RetrieveSubscription(token, clientId, subscriptionId string) (*Subscription
 //
 // Important: The Authorization header you provide to this endpoint must have the
 // following format:
-func ListSubscriptionPlans(token, clientId string) ([]*SubscriptionPlan, *NextRequest, error) {
+func ListSubscriptionPlans(token, clientID string) ([]*SubscriptionPlan, *NextRequest, error) {
 	v := make([]*SubscriptionPlan, 0)
-	nr, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/plans", clientId), token, nil, &v)
+	nr, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/plans", clientID), token, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
 	return v, nr, nil
 }
 
-func RetrieveSubscriptionPlan(token, clientId, planId string) (*SubscriptionPlan, error) {
+func RetrieveSubscriptionPlan(token, clientID, planID string) (*SubscriptionPlan, error) {
 	v := new(SubscriptionPlan)
-	_, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/plans/%s", clientId, planId), token, nil, v)
+	_, err := squareRequest("GET", fmt.Sprintf("/oauth2/clients/%s/plans/%s", clientID, planID), token, nil, v)
 	if err != nil {
 		return nil, err
 	}

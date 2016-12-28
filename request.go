@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	_SQUARE_ENDPOINT = "https://connect.squareup.com"
-	_OAUTH_PERM      = _SQUARE_ENDPOINT + "/oauth2/authorize?client_id=%s&scope=%s&session=%t"
+	_SquareEndpoint = "https://connect.squareup.com"
+	_OAuthPerm      = _SquareEndpoint + "/oauth2/authorize?client_id=%s&scope=%s&session=%t"
 )
 
 type NextRequest struct {
@@ -39,7 +39,7 @@ func squareRequest(method, action, token string, reqObj interface{}, result inte
 }
 
 func baseSquareRequest(method, action, token, contentType string, body io.Reader, result interface{}) (*NextRequest, error) {
-	req, err := http.NewRequest(method, fmt.Sprintf("%s%s", _SQUARE_ENDPOINT, action), body)
+	req, err := http.NewRequest(method, fmt.Sprintf("%s%s", _SquareEndpoint, action), body)
 	if err != nil {
 		return nil, err
 	}
@@ -84,8 +84,8 @@ func baseSquareRequest(method, action, token, contentType string, body io.Reader
 // Scope should be a space seperated list of permissions, see the above url
 // for details on what permissions are available.
 // This function will escape all your arguments so don't pass uri-escaped values.
-func GeneratePermissionURL(clientId, scope string, session bool, locale, state string) string {
-	uri := fmt.Sprintf(_OAUTH_PERM, url.QueryEscape(clientId), url.QueryEscape(scope), session)
+func GeneratePermissionURL(clientID, scope string, session bool, locale, state string) string {
+	uri := fmt.Sprintf(_OAuthPerm, url.QueryEscape(clientID), url.QueryEscape(scope), session)
 	if len(locale) > 0 {
 		uri += fmt.Sprintf("&locale=%s", url.QueryEscape(locale))
 	}
@@ -100,14 +100,14 @@ type Token struct {
 	AccessToken string `json:"access_token"`
 	TokenType   string `json:"token_type"`
 	ExpiresAt   string `json:"expires_at"`
-	MerchantId  string `json:"merchant_id"`
+	MerchantID  string `json:"merchant_id"`
 }
 
 // Get first token from new merchant's authorization code.
-func GetToken(authorizationCode, applicationId, applicationSecret string) (*Token, error) {
+func GetToken(authorizationCode, applicationID, applicationSecret string) (*Token, error) {
 	reqObj := map[string]string{
 		"code":          authorizationCode,
-		"client_id":     applicationId,
+		"client_id":     applicationID,
 		"client_secret": applicationSecret,
 	}
 	t := new(Token)
@@ -118,13 +118,13 @@ func GetToken(authorizationCode, applicationId, applicationSecret string) (*Toke
 }
 
 // Renew token from expired token. If the token is older than 30 days this won't work.
-func RenewToken(expiredToken, applicationId, applicationSecret string) (*Token, error) {
+func RenewToken(expiredToken, applicationID, applicationSecret string) (*Token, error) {
 	reqObj := map[string]string{
 		"access_token": expiredToken,
 	}
 	t := new(Token)
 	if _, err := squareRequest("POST",
-		fmt.Sprintf("/oauth2/clients/%s/access-token/renew", applicationId),
+		fmt.Sprintf("/oauth2/clients/%s/access-token/renew", applicationID),
 		applicationSecret, &reqObj, t); err != nil {
 		return nil, err
 	}

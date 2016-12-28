@@ -3,9 +3,9 @@ package gosquare
 // Represents a merchant's bank account.
 type BankAccount struct {
 	// The bank account's Square-issued ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The Square-issued ID of the merchant associated with the bank account.
-	MerchantId string `json:"merchant_id"`
+	MerchantID string `json:"merchant_id"`
 	// The name of the bank that manages the account.
 	BankName string `json:"bank_name"`
 	// The name associated with the bank account.
@@ -40,7 +40,7 @@ type BatchRequest struct {
 	Body interface{} `json:"body"`
 	// An optional identifier for the request, returned in the request's corresponding
 	// BatchResponse.
-	RequestId string `json:"request_id"`
+	RequestID string `json:"request_id"`
 }
 
 // Represents the response for a request included in a call to the Submit Batch endpoint.
@@ -54,7 +54,7 @@ type BatchResponse struct {
 	// The body of the response, if any.
 	Body interface{} `json:"body"`
 	// The value you provided for request_id in the corresponding BatchRequest, if any.
-	RequestId string `json:"request_id"`
+	RequestID string `json:"request_id"`
 }
 
 // Represents geographic coordinates.
@@ -69,9 +69,9 @@ type Coordinates struct {
 // during a cash drawer shift.
 type CashDrawerEvent struct {
 	// The event's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The ID of the employee that created the event.
-	EmployeeId string `json:"employee_id"`
+	EmployeeID string `json:"employee_id"`
 	// The type of event that occurred, such as CASH_TENDER_PAYMENT or
 	// CASH_TENDER_REFUND.
 	EventType string `json:"event_type"`
@@ -87,7 +87,7 @@ type CashDrawerEvent struct {
 // Represents all cash drawer activity that takes place during a single cash drawer shift.
 type CashDrawerShift struct {
 	// The shift's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The shift's current state (OPEN, ENDED, or CLOSED).
 	CashDrawerState string `json:"cash_drawer_state"`
 	// The time when the shift began, in ISO 8601 format.
@@ -98,14 +98,14 @@ type CashDrawerShift struct {
 	ClosedAt string `json:"closed_at"`
 	// The IDs of all employees that were logged into Square Register at some point during the
 	// cash drawer shift.
-	EmployeeIds []string `json:"employee_ids"`
+	EmployeeIDs []string `json:"employee_ids"`
 	// The ID of the employee that started the cash drawer shift.
-	OpeningEmployeeId string `json:"opening_employee_id"`
+	OpeningEmployeeID string `json:"opening_employee_id"`
 	// The ID of the employee that ended the cash drawer shift.
-	EndingEmployeeId string `json:"ending_employee_id"`
+	EndingEmployeeID string `json:"ending_employee_id"`
 	// The ID of the employee that closed the cash drawer shift by auditing the cash drawer's
 	// contents.
-	ClosingEmployeeId string `json:"closing_employee_id"`
+	ClosingEmployeeID string `json:"closing_employee_id"`
 	// An optional description of the shift, entered by the employee that ended it.
 	Description string `json:"description"`
 	// The amount of money in the cash drawer at the start of the shift.
@@ -136,7 +136,7 @@ type CashDrawerShift struct {
 // Represents an item category.
 type Category struct {
 	// The category's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The category's name.
 	Name string `json:"name"`
 }
@@ -146,7 +146,7 @@ type Device struct {
 	// The device's merchant-specified name.
 	Name string `json:"name"`
 	// The device's Square-issued ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 }
 
 // Represents a discount that can be applied to a payment. A discount can be either a
@@ -154,7 +154,7 @@ type Device struct {
 // which of rate or amount_money is included in the object.
 type Discount struct {
 	// The discount's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The discount's name.
 	Name string `json:"name"`
 	// The rate of the discount, as a string representation of a decimal number. A value of
@@ -178,16 +178,16 @@ type Discount struct {
 // Represents one of a business's employees.
 type Employee struct {
 	// The employee's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The employee's first name.
 	FirstName string `json:"first_name"`
 	// The employee's last name.
 	LastName string `json:"last_name"`
 	// The ids of the employee's associated roles. Currently, you can specify only one
 	// or zero roles per employee.
-	RoleIds []string `json:"role_ids"`
+	RoleIDs []string `json:"role_ids"`
 	// The IDs of the locations the employee is allowed to clock in at.
-	AuthorizedLocationIds []string `json:"authorized_location_ids"`
+	AuthorizedLocationIDs []string `json:"authorized_location_ids"`
 	// The employee's email address.You cannot edit this value with the Connect API.
 	// You can only set its initial value
 	// when creating an employee with the Create Employee endpoint.
@@ -198,7 +198,7 @@ type Employee struct {
 	Status string `json:"status"`
 	// An ID the merchant can set to associate the employee with an entity in another
 	// system.You cannot set this value with the Connect API.
-	ExternalId string `json:"external_id"`
+	ExternalID string `json:"external_id"`
 	// The time when the employee entity was created, in ISO 8601 format.
 	CreatedAt string `json:"created_at"`
 	// The time when the employee entity was most recently updated, in ISO 8601 format.
@@ -209,7 +209,7 @@ type Employee struct {
 // indicates which permissions they have.
 type EmployeeRole struct {
 	// The role's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The role's merchant-defined name.
 	Name string `json:"name"`
 	// The permissions that the role has been granted.
@@ -226,7 +226,7 @@ type EmployeeRole struct {
 // Represents a tax or other fee that can be applied to a payment.
 type Fee struct {
 	// The fee's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The fee's name.
 	Name string `json:"name"`
 	// The rate of the fee, as a string representation of a decimal number. A value of
@@ -299,7 +299,7 @@ type GlobalAddress struct {
 // Represents inventory information for one of a merchant's item variations.
 type InventoryEntry struct {
 	// The variation that the entry corresponds to.
-	VariationId string `json:"variation_id"`
+	VariationID string `json:"variation_id"`
 	// The current available quantity of the item variation.
 	QuantityOnHand int `json:"quantity_on_hand"`
 }
@@ -307,7 +307,7 @@ type InventoryEntry struct {
 // Represents a merchant's item.
 type Item struct {
 	// The item's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The item's name.
 	Name string `json:"name"`
 	// The item's description, if any.
@@ -343,7 +343,7 @@ type Item struct {
 // Represents an image of an item.
 type ItemImage struct {
 	// The image's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The image's publicly accessible URL.
 	Url string `json:"url"`
 }
@@ -352,11 +352,11 @@ type ItemImage struct {
 // at least one variation.
 type ItemVariation struct {
 	// The item variation's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The item variation's name.
 	Name string `json:"name"`
 	// The ID of the variation's associated item.
-	ItemId string `json:"item_id"`
+	ItemID string `json:"item_id"`
 	// Indicates the variation's list position when displayed in Square Register and the
 	// merchant dashboard. If more than one variation for the same item has the same
 	// ordinal value, those variations are displayed in alphabetical order.
@@ -385,7 +385,7 @@ type ItemVariation struct {
 // Represents a Square merchant account.
 type Merchant struct {
 	// The merchant account's unique identifier.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The name associated with the merchant account.
 	Name string `json:"name"`
 	// The email address associated with the merchant account.
@@ -436,7 +436,7 @@ type MerchantLocationDetails struct {
 // Represents an item modifier list.
 type ModifierList struct {
 	// The modifier list's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The modifier list's name.
 	Name string `json:"name"`
 	// Indicates whether MULTIPLE options or a SINGLE option from the modifier
@@ -449,7 +449,7 @@ type ModifierList struct {
 // Represents an item modifier option.
 type ModifierOption struct {
 	// The modifier option's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The modifier option's name.
 	Name string `json:"name"`
 	// The modifier option's price.
@@ -463,7 +463,7 @@ type ModifierOption struct {
 	// A modifier list's option with the lowest ordinal value is displayed first.
 	Ordinal int `json:"ordinal"`
 	// The ID of the modifier list the option belongs to.
-	ModifierListId string `json:"modifier_list_id"`
+	ModifierListID string `json:"modifier_list_id"`
 }
 
 // Represents an amount of money. When you provide this object in a request,
@@ -480,7 +480,7 @@ type Money struct {
 // Represents an order from a merchant's online store.
 type Order struct {
 	// The order's unique identifier.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The order's current state, such as OPEN or COMPLETED.
 	State string `json:"state"`
 	// The email address of the order's buyer.
@@ -508,7 +508,7 @@ type Order struct {
 	// The time when the order expires if no action is taken, in ISO 8601 format.
 	ExpiresAt string `json:"expires_at"`
 	// The unique identifier of the payment associated with the order.
-	PaymentId string `json:"payment_id"`
+	PaymentID string `json:"payment_id"`
 	// A note provided by the buyer when the order was created, if any.
 	BuyerNote string `json:"buyer_note"`
 	// A note provided by the merchant when the order's state was set to COMPLETED, if any.
@@ -541,7 +541,7 @@ type OrderHistoryEntry struct {
 // Represents a Favorites page in the iPad version of Square Register.
 type Page struct {
 	// The page's unique identifier.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The page's name, if any.
 	Name string `json:"name"`
 	// The page's position in the merchant's list of pages. Always an integer between 0 and 4,
@@ -554,7 +554,7 @@ type Page struct {
 // Represents a cell of a Page.
 type PageCell struct {
 	// The unique identifier of the page the cell is included on.
-	PageId string `json:"page_id"`
+	PageID string `json:"page_id"`
 	// The row of the cell. Always an integer between 0 and 4, inclusive.
 	Row int `json:"row"`
 	// The column of the cell. Always an integer between 0 and 4, inclusive.
@@ -564,7 +564,7 @@ type PageCell struct {
 	ObjectType string `json:"object_type"`
 	// The unique identifier of the entity represented in the cell. Not present for cells with
 	// an object_type of PLACEHOLDER.
-	ObjectId string `json:"object_id"`
+	ObjectID string `json:"object_id"`
 	// For a cell with an object_type of PLACEHOLDER, this value indicates the cell's
 	// special behavior.
 	PlaceholderType string `json:"placeholder_type"`
@@ -573,14 +573,14 @@ type PageCell struct {
 // Represents a payment taken by a Square merchant.
 type Payment struct {
 	// The payment's unique identifier.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The unique identifier of the merchant that took the payment.
-	MerchantId string `json:"merchant_id"`
+	MerchantID string `json:"merchant_id"`
 	// The time when the payment was created, in ISO 8601 format.
 	CreatedAt string `json:"created_at"`
 	// The unique identifier of the Square account that took the payment.
 	// This value can differ from merchant_id if the merchant has mobile staff.
-	CreatorId string `json:"creator_id"`
+	CreatorID string `json:"creator_id"`
 	// The device that took the payment.
 	Device Device `json:"device"`
 	// The URL of the payment's detail page in the merchant dashboard.
@@ -634,7 +634,7 @@ type PaymentDiscount struct {
 	AppliedMoney Money `json:"applied_money"`
 	// The ID of the applied discount, if available. Discounts applied in older versions of
 	// Square Register might not have an ID.
-	DiscountId string `json:"discount_id"`
+	DiscountID string `json:"discount_id"`
 }
 
 // Represents details of an item purchased in a payment.
@@ -644,9 +644,9 @@ type PaymentItemDetail struct {
 	// The item's merchant-defined SKU, if any.
 	Sku string `json:"sku"`
 	// The unique ID of the item purchased, if any.
-	ItemId string `json:"item_id"`
+	ItemID string `json:"item_id"`
 	// The unique ID of the item variation purchased, if any.
-	ItemVariationId string `json:"item_variation_id"`
+	ItemVariationID string `json:"item_variation_id"`
 }
 
 // Represents an item, custom monetary amount,
@@ -694,7 +694,7 @@ type PaymentModifier struct {
 	AppliedMoney Money `json:"applied_money"`
 	// The ID of the applied modifier option, if available. Modifier options applied in older
 	// versions of Square Register might not have an ID.
-	ModifierOptionId string `json:"modifier_option_id"`
+	ModifierOptionID string `json:"modifier_option_id"`
 }
 
 // Represents a single tax applied to a payment.
@@ -710,7 +710,7 @@ type PaymentTax struct {
 	InclusionType string `json:"inclusion_type"`
 	// The ID of the tax, if available. Taxes applied in older versions of Square Register
 	// might not have an ID.
-	FeeId string `json:"fee_id"`
+	FeeID string `json:"fee_id"`
 }
 
 // Represents a phone number.
@@ -735,20 +735,20 @@ type Refund struct {
 	// The time when Square processed the refund on behalf of the merchant, in ISO 8601 format.
 	ProcessedAt string `json:"processed_at"`
 	// The Square-issued ID of the payment the refund is applied to.
-	PaymentId string `json:"payment_id"`
+	PaymentID string `json:"payment_id"`
 }
 
 // Represents a deposit or withdrawal made by Square to a merchant's bank account.
 type Settlement struct {
 	// The settlement's unique identifier.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The settlement's current status.
 	Status string `json:"status"`
 	// The time when the settlement was submitted for deposit or withdrawal, in ISO 8601 format.
 	InitiatedAt string `json:"initiated_at"`
 	// The Square-issued unique identifier for the bank account associated with the
 	// settlement.
-	BankAccountId string `json:"bank_account_id"`
+	BankAccountID string `json:"bank_account_id"`
 	// The amount of money involved in the settlement. A positive amount indicates a deposit,
 	// and a negative amount indicates a withdrawal. This amount is never zero.
 	TotalMoney Money `json:"total_money"`
@@ -761,7 +761,7 @@ type SettlementEntry struct {
 	// The type of activity this entry represents.
 	Type string `json:"type"`
 	// The payment associated with the settlement entry, if any.
-	PaymentId string `json:"payment_id"`
+	PaymentID string `json:"payment_id"`
 	// The total amount of money this entry contributes to the total settlement amount.
 	AmountMoney Money `json:"amount_money"`
 	// The amount of all Square fees associated with this settlement entry. This value is
@@ -772,11 +772,11 @@ type SettlementEntry struct {
 // Represents a merchant's subscription to an application.
 type Subscription struct {
 	// The subscription's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The ID of the merchant with the subscription.
-	MerchantId string `json:"merchant_id"`
+	MerchantID string `json:"merchant_id"`
 	// The ID of the SubscriptionPlan the subscription belongs to.
-	PlanId string `json:"plan_id"`
+	PlanID string `json:"plan_id"`
 	// The subscription's status, such as active or canceled.
 	Status string `json:"status"`
 	// The method of payment used to pay the subscription's monthly fee.
@@ -808,7 +808,7 @@ type SubscriptionFee struct {
 // Represents an application subscription plan.
 type SubscriptionPlan struct {
 	// The plan's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The plan's name.
 	Name string `json:"name"`
 	// The country the plan applies to, in ISO 3166-1-alpha-2 format.
@@ -821,7 +821,7 @@ type SubscriptionPlan struct {
 // be provided for a single payment.
 type Tender struct {
 	// The tender's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The type of tender.
 	Type string `json:"type"`
 	// A human-readable description of the tender.
@@ -829,7 +829,7 @@ type Tender struct {
 	// The ID of the employee that processed the tender.
 	// This field is included only if the associated merchant had employee
 	// management features enabled at the time the tender was processed.
-	EmployeeId string `json:"employee_id"`
+	EmployeeID string `json:"employee_id"`
 	// The URL of the receipt for the tender.
 	ReceiptUrl string `json:"receipt_url"`
 	// The brand of credit card provided.Only present if the tender's type is CREDIT_CARD.
@@ -855,9 +855,9 @@ type Tender struct {
 // Represents a timecard for an employee.
 type Timecard struct {
 	// The timecard's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The ID of the employee the timecard is associated with.
-	EmployeeId string `json:"employee_id"`
+	EmployeeID string `json:"employee_id"`
 	// If true, the timecard was deleted by the merchant, and it is no longer
 	// valid.
 	Deleted bool `json:"deleted"`
@@ -866,9 +866,9 @@ type Timecard struct {
 	// The time the employee clocked out, in ISO 8601 format.
 	ClockoutTime string `json:"clockout_time"`
 	// The ID of the location the employee clocked in from, if any.
-	ClockinLocationId string `json:"clockin_location_id"`
+	ClockinLocationID string `json:"clockin_location_id"`
 	// The ID of the location the employee clocked out from, if any.
-	ClockoutLocationId string `json:"clockout_location_id"`
+	ClockoutLocationID string `json:"clockout_location_id"`
 	// The time when the timecard was created, in ISO 8601 format.
 	CreatedAt string `json:"created_at"`
 	// The time when the timecard was most recently updated, in ISO 8601 format.
@@ -878,7 +878,7 @@ type Timecard struct {
 // Represents an event associated with a timecard, such as an employee clocking in.
 type TimecardEvent struct {
 	// The event's unique ID.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// The type of action performed on the timecard, such as CLOCKIN or
 	// API_CREATE.
 	EventType string `json:"event_type"`
