@@ -3,6 +3,7 @@ package gosquare
 import (
 	"bytes"
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
@@ -26,7 +27,32 @@ func (nr *NextRequest) GetNextRequest(result interface{}) (*NextRequest, error) 
 	return squareRequest("GET", nr.uri, nr.token, nil, result)
 }
 
-func squareRequest(method, action, token string, reqObj interface{}, result interface{}) (*NextRequest, error) {
+func (nr *NextRequest) GetNextRequestAsBatchRequest() (*BatchRequest, string) {
+	return newBatchRequest("GET", nr.uri, nr.token, nil)
+}
+
+func newBatchRequest(method, action, token string, reqObj interface{}) (*BatchRequest, string) {
+	reqID := newUUID()
+	return &BatchRequest{
+		Method:       method,
+		RelativePath: action,
+		AccessToken:  token,
+		Body:         reqObj,
+		RequestID:    reqID,
+	}, reqID
+}
+
+func newUUID() string {
+	uuid := make([]byte, 16)
+	if _, err := io.ReadFull(rand.Reader, uuid); err != nil {
+		panic(err.Error()) // rand.Reader should never fail
+	}
+	uuid[6] = (uuid[6] & 0x0f) | 0x40
+	uuid[8] = (uuid[8] & 0x3f) | 0x80
+	return string(uuid)
+}
+
+func squareRequest(method, action, token string, reqObj, result interface{}) (*NextRequest, error) {
 	var body io.Reader = nil
 	if reqObj != nil {
 		bts, err := json.Marshal(reqObj)
@@ -62,10 +88,7 @@ func baseSquareRequest(method, action, token, contentType string, body io.Reader
 	var nr *NextRequest = nil
 	if method != "DELETE" {
 		if v, ok := resp.Header["Link"]; ok && len(v) > 0 {
-			s := strings.Split(v[0], ";")[0]
-			// 29 is the length of "<https://connect.squareup.com"
-			n := s[29 : len(s)-1]
-			nr = &NextRequest{n, token}
+			nr = newNextRequest(v[0], token)
 		}
 		dec := json.NewDecoder(resp.Body)
 		if err = dec.Decode(result); err != nil {
@@ -73,6 +96,13 @@ func baseSquareRequest(method, action, token, contentType string, body io.Reader
 		}
 	}
 	return nr, nil
+}
+
+func newNextRequest(linkHeader, token string) *NextRequest {
+	s := strings.Split(linkHeader, ";")[0]
+	// 29 is the length of "<https://connect.squareup.com"
+	n := s[29 : len(s)-1]
+	return &NextRequest{n, token}
 }
 
 // Generate a url to pass to a user to gain permisson to their account.

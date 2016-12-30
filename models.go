@@ -55,6 +55,8 @@ type BatchResponse struct {
 	Body interface{} `json:"body"`
 	// The value you provided for request_id in the corresponding BatchRequest, if any.
 	RequestID string `json:"request_id"`
+	// Specific to this library
+	NextRequest *NextRequest `json:"-"`
 }
 
 // Represents geographic coordinates.

@@ -1558,7 +1558,7 @@ func DeleteCell(token, locationID, pageID string, row, column int) error {
 // For POST and PUT endpoints, you provide request parameters as JSON in your request's body.
 type SubmitBatchReqObject struct {
 	// The requests to perform.
-	Requests []BatchRequest `json:"requests"`
+	Requests []*BatchRequest `json:"requests"`
 }
 
 // Lets you batch multiple requests to other Connect API endpoints into a single request. This
@@ -1569,16 +1569,33 @@ type SubmitBatchReqObject struct {
 // the batch.
 //
 // Note the following when using the Submit Batch endpoint:
-func SubmitBatch(token string, reqObj *SubmitBatchReqObject) ([]*BatchResponse, *NextRequest, error) {
-	if len(reqObj.Requests) > 30 {
-		return nil, nil, fmt.Errorf("You cannot submit more than 30 requests to `/v1/batch`")
+func SubmitBatch(token string, batchRequests []*BatchRequest) ([]*BatchResponse, error) {
+	if len(batchRequests) > 30 {
+		return nil, fmt.Errorf("You cannot submit more than 30 requests to `/v1/batch`")
 	}
+	reqObj := new(SubmitBatchReqObject)
+	reqObj.Requests = batchRequests
 	v := make([]*BatchResponse, 0)
-	nr, err := squareRequest("POST", "/v1/batch", token, reqObj, &v)
+	_, err := squareRequest("POST", "/v1/batch", token, reqObj, &v)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	return v, nr, nil
+	reqMap := make(map[string]*BatchRequest)
+	for _, br := range reqObj.Requests {
+		reqMap[br.RequestID] = br
+	}
+	for _, bResp := range v {
+		bReq := reqMap[bResp.RequestID]
+		if bReq.Method != "DELETE" {
+			headers, ok := bResp.Headers.(map[string]string)
+			if ok {
+				if link, ok := headers["Link"]; ok && len(link) > 0 {
+					bResp.NextRequest = newNextRequest(link, bReq.AccessToken)
+				}
+			}
+		}
+	}
+	return v, nil
 }
 
 // Lists which types of events trigger webhook notifications for a particular location.
