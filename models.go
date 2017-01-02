@@ -41,6 +41,8 @@ type BatchRequest struct {
 	// An optional identifier for the request, returned in the request's corresponding
 	// BatchResponse.
 	RequestID string `json:"request_id"`
+
+	result interface{}
 }
 
 // Represents the response for a request included in a call to the Submit Batch endpoint.

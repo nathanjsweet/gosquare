@@ -27,11 +27,11 @@ func (nr *NextRequest) GetNextRequest(result interface{}) (*NextRequest, error) 
 	return squareRequest("GET", nr.uri, nr.token, nil, result)
 }
 
-func (nr *NextRequest) GetNextRequestAsBatchRequest() (*BatchRequest, string) {
-	return newBatchRequest("GET", nr.uri, nr.token, nil)
+func (nr *NextRequest) GetNextRequestAsBatchRequest(result interface{}) (*BatchRequest, string) {
+	return newBatchRequest("GET", nr.uri, nr.token, nil, result)
 }
 
-func newBatchRequest(method, action, token string, reqObj interface{}) (*BatchRequest, string) {
+func newBatchRequest(method, action, token string, reqObj, result interface{}) (*BatchRequest, string) {
 	reqID := newUUID()
 	return &BatchRequest{
 		Method:       method,
@@ -39,6 +39,7 @@ func newBatchRequest(method, action, token string, reqObj interface{}) (*BatchRe
 		AccessToken:  token,
 		Body:         reqObj,
 		RequestID:    reqID,
+		result:       result,
 	}, reqID
 }
 

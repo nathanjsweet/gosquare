@@ -2,6 +2,7 @@ package gosquare
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -29,7 +30,7 @@ func RetrieveBusiness(token string) (*Merchant, error) {
 //
 // Required permissions:  MERCHANT_PROFILE_READ
 func ListLocations(token string) ([]*Merchant, *NextRequest, error) {
-	v := make([]*Merchant, 0)
+	v := make([]*Merchant, 1)
 	nr, err := squareRequest("GET", "/v1/me/locations", token, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -1592,6 +1593,18 @@ func SubmitBatch(token string, batchRequests []*BatchRequest) ([]*BatchResponse,
 				if link, ok := headers["Link"]; ok && len(link) > 0 {
 					bResp.NextRequest = newNextRequest(link, bReq.AccessToken)
 				}
+			}
+			if bReq.result != nil {
+				buf := new(bytes.Buffer)
+				enc := json.NewEncoder(buf)
+				if err := enc.Encode(bResp.Body); err != nil {
+					return nil, err
+				}
+				dec := json.NewDecoder(buf)
+				if err := dec.Decode(bReq.result); err != nil {
+					return nil, err
+				}
+				bResp.Body = bReq.result
 			}
 		}
 	}
