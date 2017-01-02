@@ -11,6 +11,7 @@ that returns a `*BatchRequest` object that can be added to an array
 and sent as a BatchRequest using the `SubmitBatchRequest` method.
 
 There are several utilities and functions you should be aware of for your benefit:
+
 1. Square will sometimes paginate results on large get request. On any method for
 which this is possible, the method will return a `NextRequest` object, which
 will be `nil` if there is no "next" result but will be present when there is.
