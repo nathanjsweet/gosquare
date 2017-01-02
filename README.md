@@ -8,7 +8,9 @@ See the [go docs](https://godoc.org/github.com/nathanjsweet/gosquare) for detail
 Every method in the the Connect V1 API is accounted for in the lib.
 Additionally every method has a corresponding `*BatchRequest` method,
 that returns a `*BatchRequest` object that can be added to an array
-and sent as a BatchRequest using the `SubmitBatchRequest` method.
+and sent as a BatchRequest using the `SubmitBatch` method.
+There are two exceptions, `SubmitBatch` itself, which is prohibited by Square
+explicitly, and `UploadItemImage`, which doesn't work for obvious reasons.
 
 There are several utilities and functions you should be aware of for your benefit:
 
@@ -19,7 +21,7 @@ The `NextRequest` object has two convenient methods `GetNextRequest`, which
 takes an expected result object as an argument, and will, itself, return another
 `NextRequest` object if there is an additional one, and `GetNextRequestAsBatchRequest`,
 which will return the request as a `BatchRequest` object which can be sent along
-with other `BatchRequest`s in `SubmitBatchRequest`. Finally if any `BatchRequest`
+with other `BatchRequest`s in `SubmitBatch`. Finally if any `BatchRequest`
 object has pagination the `BatchResponse` object will be populated with a
 `NextRequest` member, which can be used the same as discussed above.
 
